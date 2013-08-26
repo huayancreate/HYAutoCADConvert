@@ -39,6 +39,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.btnStartPorcess = new System.Windows.Forms.Button();
             this.lblTips = new System.Windows.Forms.Label();
+            this.btnImportExcel = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -150,18 +151,28 @@
             this.lblTips.Size = new System.Drawing.Size(0, 12);
             this.lblTips.TabIndex = 10;
             // 
-            // Form2
+            // btnImportExcel
+            // 
+            this.btnImportExcel.Location = new System.Drawing.Point(263, 12);
+            this.btnImportExcel.Name = "btnImportExcel";
+            this.btnImportExcel.Size = new System.Drawing.Size(75, 23);
+            this.btnImportExcel.TabIndex = 11;
+            this.btnImportExcel.Text = "导入Excel";
+            this.btnImportExcel.UseVisualStyleBackColor = true;
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(622, 272);
+            this.Controls.Add(this.btnImportExcel);
             this.Controls.Add(this.lblTips);
             this.Controls.Add(this.btnStartPorcess);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnOpenFiles);
-            this.Name = "Form2";
+            this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CAD文件批量修改";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
@@ -187,5 +198,6 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button btnStartPorcess;
         private System.Windows.Forms.Label lblTips;
+        private System.Windows.Forms.Button btnImportExcel;
     }
 }

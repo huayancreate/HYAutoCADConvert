@@ -15,6 +15,8 @@ using System.Windows.Forms;
 using System.Data.OleDb;
 using System.IO;
 using System.Runtime.InteropServices;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace AutoCadTestDemo
 {
@@ -23,7 +25,9 @@ namespace AutoCadTestDemo
         //AcadApplication AcadApp;
         AcadDocument AcadDoc;
         List<string> list = new List<string>();
-        Regex regex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]$");
+        HSSFWorkbook hssfworkbook;
+        DataSet ds = new DataSet();
+        //Regex regex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]$");
 
         public MainForm()
         {
@@ -88,6 +92,7 @@ namespace AutoCadTestDemo
         private void UpdateCAD()
         {
             var showInfo = "";
+            var fileStaus = "";
             if (string.IsNullOrEmpty(txtSavePath.Text))
             {
                 MessageBox.Show("请选择文件保存位置！", "提示信息"); return;
@@ -99,82 +104,35 @@ namespace AutoCadTestDemo
             {
                 lblTips.Text = "当前共有: " + lvwList.Items.Count + " 张图纸需要处理,现在正在处理第 " + (k + 1) + " 张";
                 FilePath = lvwList.Items[k].ToString();
-
-                //启动线程去处理
-
                 AcadDoc = acAppComObj.Documents.Open(FilePath, null, null);
                 acAppComObj.Application.Visible = false;
                 AcadBlocks blocks = AcadDoc.Blocks;
 
-                foreach (AcadBlock block in blocks)
+                try
                 {
-                    foreach (AcadEntity entity in block)
+                    foreach (AcadBlock block in blocks)
                     {
-                        //if (entity.ObjectName == "AcDbBlockReference")
-                        //{
-                        //    var s = ((AcadBlockReference)entity);
-                        //    if (s.HasAttributes)
-                        //    {
-                        //        AcadAttributeReference bb;
-                        //        object[] aa = (object[])s.GetAttributes();
-                        //        for (int i = 0; i < aa.Length; i++)
-                        //        {
-                        //            bb = aa[i] as AcadAttributeReference;
-                        //            if (bb != null)
-                        //            {
-                        //                if (bb.TagString != "---------" && bb.TagString != "------" && !bb.TagString.Contains("GEN-TITLE-MAT") && !bb.TagString.Contains("GEN-TITLE-DES") && bb.TagString != "01" && !bb.TagString.Contains("GEN-TITLE-SCA{6.14,1}"))
-                        //                {
-                        //                    bb.TextString = "";
-                        //                }
-                        //                if (regex.IsMatch(bb.TextString))
-                        //                {
-                        //                    OleDbParameter[] parameters = new OleDbParameter[2];
-                        //                    parameters[0] = new OleDbParameter("@OldCode", OleDbType.VarChar, 50);
-                        //                    parameters[0].Value = bb.TextString;
-                        //                    parameters[1] = new OleDbParameter("@NewCode", OleDbType.VarChar, 50);
-                        //                    parameters[1].Value = bb.TextString;
-                        //                    AccessDBUtil.ExecuteInsert("insert into code (OldCode,NewCode) values(?,?)", parameters);
-                        //                }
-                        //            }
-                        //        }
-                        //    }
-                        //}
-                        //else if (entity.ObjectName == "AcDbMText")
-                        //{
-                        //    AcadMText mtext = entity as AcadMText;
-                        //    if (mtext != null)
-                        //    {
-                        //        if (mtext.TextString.Contains("FAX") || mtext.TextString.Contains("TEL") || mtext.TextString.Contains("TOMITA"))
-                        //        {
-                        //            mtext.TextString = "";
-                        //        }
-                        //    }
-                        //}
-                        //else
-                        if (entity.ObjectName == "AcmPartRef")
+                        foreach (AcadEntity entity in block)
                         {
-                            AXDBLib.AcadObject obj = entity as AXDBLib.AcadObject;
-                            McadSymbolBBMgr symbb = (McadSymbolBBMgr)acAppComObj.GetInterfaceObject("SymBBAuto.McadSymbolBBMgr");
-                            McadBOMMgr bommgr = (McadBOMMgr)symbb.BOMMgr;
-                            var number = bommgr.GetPartAttribute(obj, "DESCR", false);
-                            showInfo += "\n" + number;
-
-                            //if (regex.IsMatch(number))
-                            //{
-                            //    string newCode = getByNewCode(number);
-                            //    if (!string.IsNullOrEmpty(newCode))
-                            //        bommgr.SetPartAttribute(obj, "DESCR", newCode);
-                            //}
+                            //1.替换基本属性
+                            Util.ReplaceProperty(entity);
+                            //2.替换装配图的明细表编号
+                            Util.ReplaceDrawingCode(entity, acAppComObj, ds);
+                            //3.处理情况保存
                         }
-                        //entity.Update();
+                    }
+                    //判断是否需要保存，如需要则另存为
+                    if (acAppComObj.ActiveDocument.Saved == false)
+                    {
+                        acAppComObj.ActiveDocument.SaveAs(txtSavePath.Text + "\\" + AcadDoc.Name, AcSaveAsType.ac2013_dwg, null);
+                        GC.Collect();
+                        fileStaus = "处理完成";
                     }
                 }
-                //if (acAppComObj.ActiveDocument.Saved == false)
-                //{
-                //    acAppComObj.ActiveDocument.SaveAs(txtSavePath.Text + "\\" + AcadDoc.Name, AcSaveAsType.ac2013_dwg, null);
-                //    InsertHistory(AcadDoc.Name, "成功");
-                //    GC.Collect();
-                //}
+                catch (Exception ex)
+                {
+                    fileStaus = "图纸处理异常，异常原因：" + ex.Message;
+                }
             }
             stopwatch.Stop(); //  停止监视
             TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
@@ -183,7 +141,7 @@ namespace AutoCadTestDemo
             double seconds = timespan.TotalSeconds;  //  总秒数
             double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数
             MessageBox.Show("图纸修改完成，修改所花时间为：" + seconds.ToString());
-            MessageBox.Show(showInfo);
+            //MessageBox.Show(showInfo);
         }
 
         private void StartCAD()
@@ -197,13 +155,6 @@ namespace AutoCadTestDemo
         /// <param name="e"></param>
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            //worker = new BackgroundWorker();
-            //worker.WorkerReportsProgress = true;
-            //worker.WorkerSupportsCancellation = true;
-            //worker.DoWork += new DoWorkEventHandler(UpdateCad_DoWork);
-            //worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
-            //worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
-            //worker.RunWorkerAsync();
             UpdateCAD();
         }
 
@@ -252,13 +203,6 @@ namespace AutoCadTestDemo
             worker.RunWorkerAsync();
         }
 
-        void BindData()
-        {
-            //DataSet ds = AccessDBUtil.ExecuteQuery("select * from code");
-            //lvwList.DataSource = ds.Tables[0].Rows[0].ItemArray;
-            //int result = AccessDBUtil.ExecuteInsert("insert into code (OldCode,NewCode) values ('1','1')");
-        }
-
         void WriteReaderTxt(string dwgName)
         {
             if (!File.Exists(Application.StartupPath + "\\图纸处理记录.txt"))
@@ -303,24 +247,6 @@ namespace AutoCadTestDemo
                     return;
                 }
             }
-        }
-
-        public static string getByNewCode(string oldCode)
-        {
-            string sql = "select newcode from code where oldcode=?";
-            OleDbParameter[] parameters = new OleDbParameter[1];
-            parameters[0] = new OleDbParameter("@oldCode", OleDbType.VarChar, 50);
-            parameters[0].Value = oldCode;
-            DataSet ds = AccessDBUtil.ExecuteQuery(sql, parameters);
-            if (ds.Tables.Count > 0)
-            {
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    DataRow row = ds.Tables[0].Rows[0];
-                    return row["newcode"].ToString();
-                }
-            }
-            return "";
         }
 
         #region 异步操作测试
@@ -388,15 +314,5 @@ namespace AutoCadTestDemo
         //    UpdateCAD();
         //}
         #endregion
-
-        void InsertHistory(string fileName, string state)
-        {
-            OleDbParameter[] parameters = new OleDbParameter[2];
-            parameters[0] = new OleDbParameter("@FileName", OleDbType.VarChar, 50);
-            parameters[0].Value = fileName;
-            parameters[1] = new OleDbParameter("@State", OleDbType.VarChar, 50);
-            parameters[1].Value = state;
-            AccessDBUtil.ExecuteInsert("insert into History (FileName,State) values(?,?)", parameters);
-        }
     }
 }
