@@ -26,7 +26,6 @@ namespace AutoCadTestDemo
         AcadDocument AcadDoc;
         List<string> list = new List<string>();
         HSSFWorkbook hssfworkbook;
-        DataSet ds = new DataSet();
         //Regex regex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]$");
 
         public MainForm()
@@ -34,6 +33,8 @@ namespace AutoCadTestDemo
             InitializeComponent();
             lvwList.DataSource = null;
             btnOpenFiles.Enabled = false;
+
+            lblTips.Text = "当前共有: 100000 张图纸需要处理,现在正在处理第 99999 张";
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace AutoCadTestDemo
 
         private void UpdateCAD()
         {
-            var showInfo = "";
+            //var showInfo = "";
             var fileStaus = "";
             if (string.IsNullOrEmpty(txtSavePath.Text))
             {
@@ -107,7 +108,11 @@ namespace AutoCadTestDemo
                 AcadDoc = acAppComObj.Documents.Open(FilePath, null, null);
                 acAppComObj.Application.Visible = false;
                 AcadBlocks blocks = AcadDoc.Blocks;
-
+                HistoryDto dto = new HistoryDto();
+                CodeDto codeDto = new CodeDto();
+                dto.Id = Guid.NewGuid().ToString();
+                dto.FileName = AcadDoc.Name;
+                dto.FilePath = FilePath;
                 try
                 {
                     foreach (AcadBlock block in blocks)
@@ -117,21 +122,34 @@ namespace AutoCadTestDemo
                             //1.替换基本属性
                             Util.ReplaceProperty(entity);
                             //2.替换装配图的明细表编号
-                            Util.ReplaceDrawingCode(entity, acAppComObj, ds);
-                            //3.处理情况保存
+                            Util.ReplaceDrawingCode(entity, acAppComObj);
+                            entity.Update();
                         }
                     }
-                    //判断是否需要保存，如需要则另存为
-                    if (acAppComObj.ActiveDocument.Saved == false)
-                    {
-                        acAppComObj.ActiveDocument.SaveAs(txtSavePath.Text + "\\" + AcadDoc.Name, AcSaveAsType.ac2013_dwg, null);
-                        GC.Collect();
-                        fileStaus = "处理完成";
-                    }
+                    fileStaus = "图纸处理完成";
+                    dto.FileStatus = fileStaus;
+                    //3.处理情况保存
+                    InsertHistory(dto);
+                    codeDto.Id = Guid.NewGuid().ToString();
+                    codeDto.OldCode = Util.oldCode;
+                    codeDto.NewCode = Util.newCode;
+                    InsertCode(codeDto);
                 }
                 catch (Exception ex)
                 {
                     fileStaus = "图纸处理异常，异常原因：" + ex.Message;
+                    dto.FileStatus = fileStaus;
+                    //3.处理情况保存
+                    InsertHistory(dto);
+                    continue;
+                }
+                dto.FileStatus = fileStaus;
+
+                //判断是否需要保存，如需要则另存为
+                if (acAppComObj.ActiveDocument.Saved == false)
+                {
+                    acAppComObj.ActiveDocument.SaveAs(txtSavePath.Text + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
+                    GC.Collect();
                 }
             }
             stopwatch.Stop(); //  停止监视
@@ -140,7 +158,8 @@ namespace AutoCadTestDemo
             double minutes = timespan.TotalMinutes;  // 总分钟
             double seconds = timespan.TotalSeconds;  //  总秒数
             double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数
-            MessageBox.Show("图纸修改完成，修改所花时间为：" + seconds.ToString());
+            MessageBox.Show(fileStaus);
+            //MessageBox.Show("图纸修改完成，修改所花时间为：" + seconds.ToString());
             //MessageBox.Show(showInfo);
         }
 
@@ -314,5 +333,22 @@ namespace AutoCadTestDemo
         //    UpdateCAD();
         //}
         #endregion
+
+        void InsertHistory(HistoryDto dto)
+        {
+            MysqlOperate operate = new MysqlOperate();
+            operate.InsertHistory(dto);
+        }
+
+        void InsertCode(CodeDto dto)
+        {
+            MysqlOperate operate = new MysqlOperate();
+            operate.InsertCode(dto);
+        }
+
+        private void btnImportExcel_Click(object sender, EventArgs e)
+        {
+            Util.InitializeWorkbook(@"C:\Users\wliu\Desktop\修改的编号.xls");
+        }
     }
 }

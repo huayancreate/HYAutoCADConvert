@@ -84,12 +84,14 @@
     <Compile Include="Bussiness\TaskFactroy.cs" />
     <Compile Include="Bussiness\TaskType.cs" />
     <Compile Include="Config\ConfigConstant.cs" />
+    <Compile Include="CodeDto.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="HistoryDto.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -15,11 +15,13 @@ namespace AutoCadTestDemo
     {
         private static HSSFWorkbook hssfworkbook;
         private static DataSet ds = new DataSet();
+        public static string oldCode = "";
+        public static string newCode = "";
 
-        private static string ReplaceStr(string str)
+        private static string ReplaceStr(string oldCode)
         {
-            var startStr = str.Substring(0, RegexCode(str));
-            var endStr = str.Substring(RegexCode(str), str.Length - RegexCode(str));
+            var startStr = oldCode.Substring(0, RegexCode());
+            var endStr = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
             if (endStr.Contains("O") || endStr.Contains("o"))
             {
                 endStr = endStr.Replace("o", "0");
@@ -38,10 +40,10 @@ namespace AutoCadTestDemo
             return startStr + endStr;
         }
 
-        private static string Rand(string str)
+        private static string Rand()
         {
             Random random = new Random();
-            if (RegexCode(str) == 2) return random.Next(0, 99999).ToString();
+            if (RegexCode() == 2) return random.Next(0, 99999).ToString();
             else return random.Next(0, 9999).ToString();
         }
 
@@ -75,15 +77,22 @@ namespace AutoCadTestDemo
                             {
                                 bb.TextString = "";
                             }
-                            //if (regex.IsMatch(bb.TextString))
-                            //{
-                            //    OleDbParameter[] parameters = new OleDbParameter[2];
-                            //    parameters[0] = new OleDbParameter("@OldCode", OleDbType.VarChar, 50);
-                            //    parameters[0].Value = bb.TextString;
-                            //    parameters[1] = new OleDbParameter("@NewCode", OleDbType.VarChar, 50);
-                            //    parameters[1].Value = bb.TextString;
-                            //    AccessDBUtil.ExecuteInsert("insert into code (OldCode,NewCode) values(?,?)", parameters);
-                            //}
+                            if (bb.TagString == "---------")
+                            {
+                                oldCode = bb.TextString;
+                                oldCode = ReplaceStr(oldCode);
+                                var startCode = oldCode.Substring(0, RegexCode());
+                                var endCode = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
+                                for (int j = 1; j < ds.Tables[0].Rows.Count; j++)
+                                {
+                                    if (startCode == ds.Tables[0].Rows[j][0].ToString())
+                                    {
+                                        startCode = ds.Tables[0].Rows[j][1].ToString();
+                                    }
+                                }
+                                newCode = startCode + "0" + Rand();
+                                if (!string.IsNullOrEmpty(newCode)) bb.TextString = newCode;
+                            }
                         }
                     }
                 }
@@ -107,36 +116,40 @@ namespace AutoCadTestDemo
         /// <param name="entity"></param>
         /// <param name="acAppComObj"></param>
         /// <param name="ds"></param>
-        public static void ReplaceDrawingCode(AcadEntity entity, AcadApplication acAppComObj, DataSet ds)
+        public static void ReplaceDrawingCode(AcadEntity entity, AcadApplication acAppComObj)
         {
             if (entity.ObjectName == "AcmPartRef")
             {
                 AXDBLib.AcadObject obj = entity as AXDBLib.AcadObject;
                 McadSymbolBBMgr symbb = (McadSymbolBBMgr)acAppComObj.GetInterfaceObject("SymBBAuto.McadSymbolBBMgr");
                 McadBOMMgr bommgr = (McadBOMMgr)symbb.BOMMgr;
-                var oldCode = bommgr.GetPartAttribute(obj, "DESCR", false);
-                oldCode = ReplaceStr(oldCode);
-                Regex regex = new Regex(@"[A-Z]");
-                var startCode = oldCode.Substring(0, RegexCode(oldCode));
-                var endCode = oldCode.Substring(RegexCode(oldCode), oldCode.Length - RegexCode(oldCode));
-                for (int i = 1; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    if (startCode == ds.Tables[0].Rows[i][0].ToString())
-                    {
-                        startCode = ds.Tables[0].Rows[i][1].ToString();
-                    }
-                }
-                //endCode
-                //var newCode = temp + endStr;
-                //bommgr.SetPartAttribute(obj, "DESCR", newCode);
-                //showInfo += "\n" + number;
-
-                //if (regex.IsMatch(number))
+                oldCode = bommgr.GetPartAttribute(obj, "DESCR", false);
+                string newCode = getByNewCode(oldCode);
+                if (!string.IsNullOrEmpty(newCode)) bommgr.SetPartAttribute(obj, "DESCR", newCode);
+                //oldCode = ReplaceStr(oldCode);
+                //var newCode = "";
+                //var startCode = oldCode.Substring(0, RegexCode());
+                //var endCode = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
+                //for (int i = 1; i < ds.Tables[0].Rows.Count; i++)
                 //{
-                //    string newCode = getByNewCode(number);
-                //    if (!string.IsNullOrEmpty(newCode))
-                //        bommgr.SetPartAttribute(obj, "DESCR", newCode);
+                //    if (startCode == ds.Tables[0].Rows[i][0].ToString())
+                //    {
+                //        startCode = ds.Tables[0].Rows[i][1].ToString();
+                //    }
+                //    else
+                //    {
+                //        startCode = "";
+                //    }
                 //}
+                //if (string.IsNullOrEmpty(startCode))
+                //{
+                //    newCode = "";
+                //}
+                //else
+                //{
+                //    newCode = startCode + "0" + Rand();
+                //}
+                //if (!string.IsNullOrEmpty(newCode)) bommgr.SetPartAttribute(obj, "DESCR", newCode);
             }
         }
 
@@ -158,6 +171,7 @@ namespace AutoCadTestDemo
         /// </summary>
         static void ConvertToDataTable()
         {
+            ds.Tables.Clear();
             ds.Clear();
             ISheet sheet = hssfworkbook.GetSheetAt(0);
             System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
@@ -188,11 +202,26 @@ namespace AutoCadTestDemo
             ds.Tables.Add(dt);
         }
 
-        static int RegexCode(string code)
+        static int RegexCode()
         {
-            Regex regex = new Regex(@"[A-Z]");
-            if (regex.IsMatch(code.Substring(0, 3))) return 3;
+            Regex regex = new Regex(@"^[A-Za-z]+$");
+            if (regex.IsMatch(oldCode.Substring(0, 3))) return 3;
             else return 2;
+        }
+
+        static string getByNewCode(string oldCode)
+        {
+            string sql = "select newcode from code where oldcode=?";
+            DataSet dataSet = MysqlDBUtil.Query(sql);
+            if (dataSet.Tables.Count > 0)
+            {
+                if (dataSet.Tables[0].Rows.Count > 0)
+                {
+                    DataRow row = dataSet.Tables[0].Rows[0];
+                    return row["newcode"].ToString();
+                }
+            }
+            return "";
         }
     }
 }

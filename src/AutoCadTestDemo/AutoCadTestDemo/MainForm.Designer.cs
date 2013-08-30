@@ -51,12 +51,12 @@
             this.lvwList.ItemHeight = 12;
             this.lvwList.Location = new System.Drawing.Point(3, 5);
             this.lvwList.Name = "lvwList";
-            this.lvwList.Size = new System.Drawing.Size(592, 124);
+            this.lvwList.Size = new System.Drawing.Size(673, 124);
             this.lvwList.TabIndex = 0;
             // 
             // btnOpenFiles
             // 
-            this.btnOpenFiles.Location = new System.Drawing.Point(119, 12);
+            this.btnOpenFiles.Location = new System.Drawing.Point(112, 12);
             this.btnOpenFiles.Name = "btnOpenFiles";
             this.btnOpenFiles.Size = new System.Drawing.Size(127, 23);
             this.btnOpenFiles.TabIndex = 1;
@@ -71,7 +71,7 @@
             this.panel1.Controls.Add(this.lvwList);
             this.panel1.Location = new System.Drawing.Point(12, 41);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(598, 135);
+            this.panel1.Size = new System.Drawing.Size(679, 135);
             this.panel1.TabIndex = 5;
             // 
             // panel2
@@ -82,12 +82,12 @@
             this.panel2.Controls.Add(this.txtSavePath);
             this.panel2.Location = new System.Drawing.Point(15, 182);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(398, 78);
+            this.panel2.Size = new System.Drawing.Size(478, 78);
             this.panel2.TabIndex = 6;
             // 
             // btnSelect
             // 
-            this.btnSelect.Location = new System.Drawing.Point(335, 14);
+            this.btnSelect.Location = new System.Drawing.Point(415, 17);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(58, 42);
             this.btnSelect.TabIndex = 11;
@@ -109,14 +109,14 @@
             this.txtSavePath.Location = new System.Drawing.Point(103, 19);
             this.txtSavePath.Multiline = true;
             this.txtSavePath.Name = "txtSavePath";
-            this.txtSavePath.Size = new System.Drawing.Size(226, 33);
+            this.txtSavePath.Size = new System.Drawing.Size(306, 33);
             this.txtSavePath.TabIndex = 9;
             this.txtSavePath.Text = "C:\\Users\\wliu\\Desktop\\修改后的图纸";
             // 
             // btnUpdate
             // 
             this.btnUpdate.Enabled = false;
-            this.btnUpdate.Location = new System.Drawing.Point(38, 6);
+            this.btnUpdate.Location = new System.Drawing.Point(37, 6);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(112, 64);
             this.btnUpdate.TabIndex = 5;
@@ -128,9 +128,9 @@
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.btnUpdate);
-            this.panel3.Location = new System.Drawing.Point(419, 182);
+            this.panel3.Location = new System.Drawing.Point(503, 182);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(188, 78);
+            this.panel3.Size = new System.Drawing.Size(185, 78);
             this.panel3.TabIndex = 8;
             // 
             // btnStartPorcess
@@ -146,25 +146,26 @@
             // lblTips
             // 
             this.lblTips.AutoSize = true;
-            this.lblTips.Location = new System.Drawing.Point(272, 17);
+            this.lblTips.Location = new System.Drawing.Point(333, 17);
             this.lblTips.Name = "lblTips";
             this.lblTips.Size = new System.Drawing.Size(0, 12);
             this.lblTips.TabIndex = 10;
             // 
             // btnImportExcel
             // 
-            this.btnImportExcel.Location = new System.Drawing.Point(263, 12);
+            this.btnImportExcel.Location = new System.Drawing.Point(249, 12);
             this.btnImportExcel.Name = "btnImportExcel";
             this.btnImportExcel.Size = new System.Drawing.Size(75, 23);
             this.btnImportExcel.TabIndex = 11;
             this.btnImportExcel.Text = "导入Excel";
             this.btnImportExcel.UseVisualStyleBackColor = true;
+            this.btnImportExcel.Click += new System.EventHandler(this.btnImportExcel_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(622, 272);
+            this.ClientSize = new System.Drawing.Size(697, 272);
             this.Controls.Add(this.btnImportExcel);
             this.Controls.Add(this.lblTips);
             this.Controls.Add(this.btnStartPorcess);
@@ -172,6 +173,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnOpenFiles);
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CAD文件批量修改";
