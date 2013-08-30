@@ -8,6 +8,7 @@ namespace AutoCadTestDemo.Bussiness
     public class Rules
     {
         Hashtable convertRules = new Hashtable();
+        
 
         public void SetRules(string oldNum, string newNum)
         {

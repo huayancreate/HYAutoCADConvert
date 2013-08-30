@@ -1,5 +1,7 @@
-﻿using System;
+﻿using AutoCAD;
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
@@ -11,6 +13,34 @@ namespace AutoCadTestDemo.Bussiness
         private Rules defaultRules = null;
         protected WaitCallback waitCallback = null;
         private string taskName;
+        private string absPath;
+        private AcadApplication acAppComObj;
+
+        public AcadApplication AcAppComObj
+        {
+            get { return acAppComObj; }
+            set { acAppComObj = value; }
+        }
+        private AcadDocument acadDoc;
+
+        public AcadDocument AcadDoc
+        {
+            get { return acadDoc; }
+            set { acadDoc = value; }
+        }
+        private string savePath;
+
+        public string SavePath
+        {
+            get { return savePath; }
+            set { savePath = value; }
+        }
+
+        public string AbsPath
+        {
+            get { return absPath; }
+            set { absPath = value; }
+        }
 
         public string TaskName
         {
@@ -24,11 +54,7 @@ namespace AutoCadTestDemo.Bussiness
             {
                 defaultRules = singleRules;
             }
-        }
-
-        public WaitCallback GetWaitCallback()
-        {
-            return waitCallback;
+            //this.Open();
         }
 
         public void SetDefaultRules(Rules rules)
@@ -36,8 +62,11 @@ namespace AutoCadTestDemo.Bussiness
             defaultRules = rules;
         }
 
-        public abstract void SetWaitCallback();
+        public Rules GetDefaultRules()
+        {
+            return this.defaultRules;
+        }
 
-        public abstract void Run(object state);
+        public abstract void Run();
     }
 }

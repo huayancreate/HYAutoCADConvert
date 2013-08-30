@@ -3,6 +3,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using SymBBAuto;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -17,6 +18,8 @@ namespace AutoCadTestDemo
         private static DataSet ds = new DataSet();
         public static string oldCode = "";
         public static string newCode = "";
+        public static Bussiness.Rules rules = new Bussiness.Rules();
+        public static List<string> drwings = new List<string>();
 
         private static string ReplaceStr(string oldCode)
         {
@@ -83,11 +86,12 @@ namespace AutoCadTestDemo
                                 oldCode = ReplaceStr(oldCode);
                                 var startCode = oldCode.Substring(0, RegexCode());
                                 var endCode = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
-                                for (int j = 1; j < ds.Tables[0].Rows.Count; j++)
+                                Hashtable hash = rules.GetRules();
+                                foreach (DictionaryEntry de in hash)
                                 {
-                                    if (startCode == ds.Tables[0].Rows[j][0].ToString())
+                                    if (startCode == de.Key.ToString())
                                     {
-                                        startCode = ds.Tables[0].Rows[j][1].ToString();
+                                        startCode = de.Value.ToString();
                                     }
                                 }
                                 newCode = startCode + "0" + Rand();
@@ -120,12 +124,12 @@ namespace AutoCadTestDemo
         {
             if (entity.ObjectName == "AcmPartRef")
             {
-                AXDBLib.AcadObject obj = entity as AXDBLib.AcadObject;
-                McadSymbolBBMgr symbb = (McadSymbolBBMgr)acAppComObj.GetInterfaceObject("SymBBAuto.McadSymbolBBMgr");
-                McadBOMMgr bommgr = (McadBOMMgr)symbb.BOMMgr;
-                oldCode = bommgr.GetPartAttribute(obj, "DESCR", false);
-                string newCode = getByNewCode(oldCode);
-                if (!string.IsNullOrEmpty(newCode)) bommgr.SetPartAttribute(obj, "DESCR", newCode);
+                //AXDBLib.AcadObject obj = entity as AXDBLib.AcadObject;
+                //McadSymbolBBMgr symbb = (McadSymbolBBMgr)acAppComObj.GetInterfaceObject("SymBBAuto.McadSymbolBBMgr");
+                //McadBOMMgr bommgr = (McadBOMMgr)symbb.BOMMgr;
+                //oldCode = bommgr.GetPartAttribute(obj, "DESCR", false);
+                //string newCode = getByNewCode(oldCode);
+                //if (!string.IsNullOrEmpty(newCode)) bommgr.SetPartAttribute(obj, "DESCR", newCode);
                 //oldCode = ReplaceStr(oldCode);
                 //var newCode = "";
                 //var startCode = oldCode.Substring(0, RegexCode());
@@ -157,22 +161,23 @@ namespace AutoCadTestDemo
         /// 读取Excel
         /// </summary>
         /// <param name="path"></param>
-        public static void InitializeWorkbook(string path)
+        public static DataSet InitializeWorkbook(string path)
         {
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 hssfworkbook = new HSSFWorkbook(file);
-                ConvertToDataTable();
+                return ConvertToDataTable();
             }
         }
 
         /// <summary>
         /// 读取Excel数据转化为DataTable
         /// </summary>
-        static void ConvertToDataTable()
+        static DataSet ConvertToDataTable()
         {
-            ds.Tables.Clear();
-            ds.Clear();
+            DataSet dsExcelValue = new DataSet();
+            dsExcelValue.Tables.Clear();
+            dsExcelValue.Clear();
             ISheet sheet = hssfworkbook.GetSheetAt(0);
             System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
 
@@ -199,7 +204,8 @@ namespace AutoCadTestDemo
                 }
                 dt.Rows.Add(dr);
             }
-            ds.Tables.Add(dt);
+            dsExcelValue.Tables.Add(dt);
+            return dsExcelValue;
         }
 
         static int RegexCode()
@@ -211,7 +217,7 @@ namespace AutoCadTestDemo
 
         static string getByNewCode(string oldCode)
         {
-            string sql = "select newcode from code where oldcode=?";
+            string sql = "select newcode from code where oldcode='" + oldCode + "'";
             DataSet dataSet = MysqlDBUtil.Query(sql);
             if (dataSet.Tables.Count > 0)
             {
@@ -222,6 +228,27 @@ namespace AutoCadTestDemo
                 }
             }
             return "";
+        }
+
+        public static List<string> GetAllFiles(DirectoryInfo dir)
+        {
+            FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
+            foreach (FileSystemInfo info in fileinfo)
+            {
+                if (info is DirectoryInfo)
+                {
+                    GetAllFiles((DirectoryInfo)info);
+                }
+                else
+                {
+                    var extension = info.Extension;
+                    if (extension.Equals(".dwg") || extension.Equals(".dwt") || extension.Equals(".dws") || extension.Equals(".dxf"))
+                    {
+                        drwings.Add(info.FullName);
+                    }
+                }
+            }
+            return null;
         }
     }
 }

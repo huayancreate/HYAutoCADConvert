@@ -92,7 +92,7 @@ namespace AutoCadTestDemo
 
         private void UpdateCAD()
         {
-            //var showInfo = "";
+            var showInfo = "";
             var fileStaus = "";
             if (string.IsNullOrEmpty(txtSavePath.Text))
             {
@@ -119,28 +119,30 @@ namespace AutoCadTestDemo
                     {
                         foreach (AcadEntity entity in block)
                         {
-                            //1.替换基本属性
-                            Util.ReplaceProperty(entity);
-                            //2.替换装配图的明细表编号
-                            Util.ReplaceDrawingCode(entity, acAppComObj);
-                            entity.Update();
+                            list.Add(entity.ObjectName);
+
+                            ////1.替换基本属性
+                            //Util.ReplaceProperty(entity);
+                            ////2.替换装配图的明细表编号
+                            //Util.ReplaceDrawingCode(entity, acAppComObj);
+                            //entity.Update();
                         }
                     }
                     fileStaus = "图纸处理完成";
                     dto.FileStatus = fileStaus;
                     //3.处理情况保存
-                    InsertHistory(dto);
+                    //InsertHistory(dto);
                     codeDto.Id = Guid.NewGuid().ToString();
                     codeDto.OldCode = Util.oldCode;
                     codeDto.NewCode = Util.newCode;
-                    InsertCode(codeDto);
+                    //InsertCode(codeDto);
                 }
                 catch (Exception ex)
                 {
                     fileStaus = "图纸处理异常，异常原因：" + ex.Message;
                     dto.FileStatus = fileStaus;
                     //3.处理情况保存
-                    InsertHistory(dto);
+                    //InsertHistory(dto);
                     continue;
                 }
                 dto.FileStatus = fileStaus;
@@ -158,9 +160,10 @@ namespace AutoCadTestDemo
             double minutes = timespan.TotalMinutes;  // 总分钟
             double seconds = timespan.TotalSeconds;  //  总秒数
             double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数
+            lvwList.DataSource = list;
             MessageBox.Show(fileStaus);
             //MessageBox.Show("图纸修改完成，修改所花时间为：" + seconds.ToString());
-            //MessageBox.Show(showInfo);
+            MessageBox.Show(showInfo);
         }
 
         private void StartCAD()
@@ -174,7 +177,9 @@ namespace AutoCadTestDemo
         /// <param name="e"></param>
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            UpdateCAD();
+            Bussiness.Process p = new Bussiness.Process();
+            p.Init();
+            //UpdateCAD();
         }
 
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
