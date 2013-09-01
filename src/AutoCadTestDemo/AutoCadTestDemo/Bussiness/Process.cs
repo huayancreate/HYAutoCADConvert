@@ -18,8 +18,6 @@ namespace AutoCadTestDemo.Bussiness
         private AbstractTask task;
         private AcadApplication acAppComObj = null;
 
-
-
         private void Open()
         {
             const string strProgId = "AutoCAD.Application";
@@ -58,7 +56,10 @@ namespace AutoCadTestDemo.Bussiness
             string filePath = ConfigurationManager.AppSettings["filePath"].ToString();
             DirectoryInfo dir = new DirectoryInfo(filePath);
             Util.GetAllFiles(dir);
+            Util.GetDrwingsList();
+            List<string> list = Util.drwings;
             this.Open();
+            Thread.Sleep(2000);
         }
 
         private void Run()
@@ -82,16 +83,15 @@ namespace AutoCadTestDemo.Bussiness
 
         private Rules GetRules()
         {
+            //TODO
             Rules rules = new Rules();
-            DataSet ds = Util.InitializeWorkbook(@"C:\Users\wliu\Desktop\修改的编号.xls");
+            DataSet ds = Util.InitializeWorkbook(ConfigurationManager.AppSettings["xls"].ToString());
             for (int i = 1; i < ds.Tables[0].Rows.Count; i++)//从第二行开始读取数据
             {
                 rules.SetRules(ds.Tables[0].Rows[i][0].ToString(), ds.Tables[0].Rows[i][1].ToString());
+                CreateDir(ds.Tables[0].Rows[i][1].ToString());
             }
-            //TODO
-            //Rules rules = new Rules();
-            //rules.SetRules("111", "111");
-            //return new Rules();
+            CreateDir("失败的图纸文件");
             return rules;
         }
 
@@ -99,19 +99,26 @@ namespace AutoCadTestDemo.Bussiness
         {
             //TODO 获取需要执行的任务
             List<string> drwings = Util.drwings;
-           //drwings.Add(@"C:\Users\wliu\Desktop\chengxu\新建文件夹\DRU0000562.dwg");
+            //drwings.Add(@"C:\Users\wliu\Desktop\chengxu\新建文件夹\DRU0000562.dwg");
             for (int i = 0; i < drwings.Count; i++)
             {
                 task = TaskFactroy.CreateTaskByType(TaskType.DefaultTask);
                 task.AbsPath = drwings[i];
                 task.AcAppComObj = this.acAppComObj;
-                task.SavePath = @"C:\Users\wliu\Desktop\修改后的图纸";
+                task.SavePath = ConfigurationManager.AppSettings["savePath"].ToString();
                 task.SetDefaultRules(rules);
                 task.TaskName = "drwing_" + i;
                 task.Init();
                 taskList.Add(task);
             }
         }
-
+        private void CreateDir(string name)
+        {
+            var path = ConfigurationManager.AppSettings["savePath"].ToString() + name;
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
     }
 }

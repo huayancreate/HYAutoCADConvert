@@ -18,8 +18,10 @@ namespace AutoCadTestDemo
         private static DataSet ds = new DataSet();
         public static string oldCode = "";
         public static string newCode = "";
-        public static Bussiness.Rules rules = new Bussiness.Rules();
+        //public static Bussiness.Rules rules = new Bussiness.Rules();
         public static List<string> drwings = new List<string>();
+        private static Random rand = new Random(99999999);
+        private static MysqlOperate operate = new MysqlOperate();
 
         private static string ReplaceStr(string oldCode)
         {
@@ -46,8 +48,8 @@ namespace AutoCadTestDemo
         private static string Rand()
         {
             Random random = new Random();
-            if (RegexCode() == 2) return random.Next(0, 99999).ToString();
-            else return random.Next(0, 9999).ToString();
+            if (RegexCode() == 2) return random.Next(10000, 99999).ToString();
+            else return random.Next(1000, 9999).ToString();
         }
 
         /// <summary>
@@ -62,11 +64,13 @@ namespace AutoCadTestDemo
         /// 替换审核者、设计者、日期等属性
         /// </summary>
         /// <param name="entity"></param>
-        public static void ReplaceProperty(AcadEntity entity)
+        public static void ReplaceProperty(AcadEntity entity, AcadBlocks blocks, Bussiness.Rules rules)
         {
             if (entity.ObjectName == "AcDbBlockReference")
             {
                 var s = ((AcadBlockReference)entity);
+                var name = blocks.Item(s.Name).Name;
+                blocks.Item(s.Name).Name = rand.Next().ToString();
                 if (s.HasAttributes)
                 {
                     AcadAttributeReference bb;
@@ -124,36 +128,12 @@ namespace AutoCadTestDemo
         {
             if (entity.ObjectName == "AcmPartRef")
             {
-                //AXDBLib.AcadObject obj = entity as AXDBLib.AcadObject;
-                //McadSymbolBBMgr symbb = (McadSymbolBBMgr)acAppComObj.GetInterfaceObject("SymBBAuto.McadSymbolBBMgr");
-                //McadBOMMgr bommgr = (McadBOMMgr)symbb.BOMMgr;
-                //oldCode = bommgr.GetPartAttribute(obj, "DESCR", false);
-                //string newCode = getByNewCode(oldCode);
-                //if (!string.IsNullOrEmpty(newCode)) bommgr.SetPartAttribute(obj, "DESCR", newCode);
-                //oldCode = ReplaceStr(oldCode);
-                //var newCode = "";
-                //var startCode = oldCode.Substring(0, RegexCode());
-                //var endCode = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
-                //for (int i = 1; i < ds.Tables[0].Rows.Count; i++)
-                //{
-                //    if (startCode == ds.Tables[0].Rows[i][0].ToString())
-                //    {
-                //        startCode = ds.Tables[0].Rows[i][1].ToString();
-                //    }
-                //    else
-                //    {
-                //        startCode = "";
-                //    }
-                //}
-                //if (string.IsNullOrEmpty(startCode))
-                //{
-                //    newCode = "";
-                //}
-                //else
-                //{
-                //    newCode = startCode + "0" + Rand();
-                //}
-                //if (!string.IsNullOrEmpty(newCode)) bommgr.SetPartAttribute(obj, "DESCR", newCode);
+                AXDBLib.AcadObject obj = entity as AXDBLib.AcadObject;
+                McadSymbolBBMgr symbb = (McadSymbolBBMgr)acAppComObj.GetInterfaceObject("SymBBAuto.McadSymbolBBMgr");
+                McadBOMMgr bommgr = (McadBOMMgr)symbb.BOMMgr;
+                oldCode = bommgr.GetPartAttribute(obj, "DESCR", false);
+                string newCode = getByNewCode(oldCode);
+                if (!string.IsNullOrEmpty(newCode)) bommgr.SetPartAttribute(obj, "DESCR", newCode);
             }
         }
 
@@ -229,9 +209,14 @@ namespace AutoCadTestDemo
             }
             return "";
         }
-
+        /// <summary>
+        /// 获取所选文件夹的文件
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
         public static List<string> GetAllFiles(DirectoryInfo dir)
         {
+            HistoryDto dto = new HistoryDto();
             FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
             foreach (FileSystemInfo info in fileinfo)
             {
@@ -244,11 +229,62 @@ namespace AutoCadTestDemo
                     var extension = info.Extension;
                     if (extension.Equals(".dwg") || extension.Equals(".dwt") || extension.Equals(".dws") || extension.Equals(".dxf"))
                     {
-                        drwings.Add(info.FullName);
+                        if (Util.GetDrwingsDto(info.Name) == null)
+                        {
+                            dto.Id = Guid.NewGuid().ToString();
+                            dto.FileName = info.Name;
+                            dto.FilePath = info.FullName.Replace("\\", "\\\\");
+                            dto.FileStatus = "未处理";
+                            InsertHistory(dto);
+                        }
                     }
                 }
             }
             return null;
+        }
+        /// <summary>
+        /// 添加历史记录
+        /// </summary>
+        /// <param name="dto"></param>
+        public static void InsertHistory(HistoryDto dto)
+        {
+            //MysqlOperate operate = new MysqlOperate();
+            operate.InsertHistory(dto);
+        }
+        /// <summary>
+        /// 添加新的图纸编号
+        /// </summary>
+        /// <param name="dto"></param>
+        public static void InsertCode(CodeDto dto)
+        {
+            //MysqlOperate operate = new MysqlOperate();
+            operate.InsertCode(dto);
+        }
+
+        public static void GetDrwingsList()
+        {
+            //MysqlOperate operate = new MysqlOperate();
+            drwings = operate.GetDrwingsList();
+        }
+
+        public static HistoryDto GetDrwingsDto(string path)
+        {
+            //MysqlOperate operate = new MysqlOperate();
+            HistoryDto dto = operate.GetDrwingsDto(path);
+            return dto;
+        }
+
+        public static void UpdateHistory(HistoryDto dto)
+        {
+            //MysqlOperate operate = new MysqlOperate();
+            operate.UpdateHistory(dto);
+        }
+
+        public static string SplitCode(string value)
+        {
+            Regex regex = new Regex(@"^[A-Za-z]+$");
+            if (regex.IsMatch(value.Substring(0, 3))) return value.Substring(0, 3);
+            else return value.Substring(0, 2);
         }
     }
 }

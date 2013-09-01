@@ -177,8 +177,17 @@ namespace AutoCadTestDemo
         /// <param name="e"></param>
         private void btnUpdate_Click(object sender, EventArgs e)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             Bussiness.Process p = new Bussiness.Process();
             p.Init();
+            stopwatch.Stop(); //  停止监视
+            TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
+            double hours = timespan.TotalHours; // 总小时
+            double minutes = timespan.TotalMinutes;  // 总分钟
+            double seconds = timespan.TotalSeconds;  //  总秒数
+            double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数
+            MessageBox.Show("图纸修改完成，修改所花时间为：" + seconds.ToString());
             //UpdateCAD();
         }
 

@@ -85,6 +85,7 @@
     <Compile Include="Bussiness\TaskType.cs" />
     <Compile Include="Config\ConfigConstant.cs" />
     <Compile Include="CodeDto.cs" />
+    <Compile Include="DrwingInfoDto.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
