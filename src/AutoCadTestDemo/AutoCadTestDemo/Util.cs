@@ -214,9 +214,10 @@ namespace AutoCadTestDemo
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        public static List<string> GetAllFiles(DirectoryInfo dir)
+        public static void GetAllFiles(DirectoryInfo dir)
         {
             HistoryDto dto = new HistoryDto();
+            List<HistoryDto> listHis = new List<HistoryDto>();
             FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
             foreach (FileSystemInfo info in fileinfo)
             {
@@ -235,21 +236,38 @@ namespace AutoCadTestDemo
                             dto.FileName = info.Name;
                             dto.FilePath = info.FullName.Replace("\\", "\\\\");
                             dto.FileStatus = "未处理";
-                            InsertHistory(dto);
+                            listHis.Add(dto);
                         }
                     }
                 }
             }
-            return null;
+            InsertHistory(listHis);
+            listHis.Clear();
         }
+
+        public static List<HistoryDto> RandomSortList(List<HistoryDto> listHis)
+        {
+            Random random = new Random();
+            List<HistoryDto> newList = new List<HistoryDto>();
+            foreach (HistoryDto item in listHis)
+            {
+                newList.Insert(random.Next(newList.Count + 1), item);
+            }
+            return newList;
+        }
+
         /// <summary>
         /// 添加历史记录
         /// </summary>
         /// <param name="dto"></param>
-        public static void InsertHistory(HistoryDto dto)
+        public static void InsertHistory(List<HistoryDto> dtos)
         {
             //MysqlOperate operate = new MysqlOperate();
-            operate.InsertHistory(dto);
+            List<HistoryDto> list = RandomSortList(dtos);
+            foreach (HistoryDto dto in list)
+            {
+                operate.InsertHistory(dto);
+            }
         }
         /// <summary>
         /// 添加新的图纸编号

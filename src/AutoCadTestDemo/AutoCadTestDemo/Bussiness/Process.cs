@@ -86,7 +86,8 @@ namespace AutoCadTestDemo.Bussiness
             //TODO
             Rules rules = new Rules();
             DataSet ds = Util.InitializeWorkbook(ConfigurationManager.AppSettings["xls"].ToString());
-            for (int i = 1; i < ds.Tables[0].Rows.Count; i++)//从第二行开始读取数据
+            int count = ds.Tables[0].Rows.Count;
+            for (int i = 1; i < count; i++)//从第二行开始读取数据
             {
                 rules.SetRules(ds.Tables[0].Rows[i][0].ToString(), ds.Tables[0].Rows[i][1].ToString());
                 CreateDir(ds.Tables[0].Rows[i][1].ToString());
