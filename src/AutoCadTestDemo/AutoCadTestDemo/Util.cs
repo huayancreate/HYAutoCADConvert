@@ -216,7 +216,6 @@ namespace AutoCadTestDemo
         /// <returns></returns>
         public static void GetAllFiles(DirectoryInfo dir)
         {
-            HistoryDto dto = new HistoryDto();
             List<HistoryDto> listHis = new List<HistoryDto>();
             FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
             foreach (FileSystemInfo info in fileinfo)
@@ -232,6 +231,7 @@ namespace AutoCadTestDemo
                     {
                         if (Util.GetDrwingsDto(info.Name) == null)
                         {
+                            HistoryDto dto = new HistoryDto();
                             dto.Id = Guid.NewGuid().ToString();
                             dto.FileName = info.Name;
                             dto.FilePath = info.FullName.Replace("\\", "\\\\");

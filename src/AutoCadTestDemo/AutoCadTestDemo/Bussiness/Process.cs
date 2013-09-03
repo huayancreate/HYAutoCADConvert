@@ -53,12 +53,12 @@ namespace AutoCadTestDemo.Bussiness
 
         private void InitProcess()
         {
+            this.Open();
             string filePath = ConfigurationManager.AppSettings["filePath"].ToString();
             DirectoryInfo dir = new DirectoryInfo(filePath);
             Util.GetAllFiles(dir);
             Util.GetDrwingsList();
             List<string> list = Util.drwings;
-            this.Open();
             Thread.Sleep(2000);
         }
 
