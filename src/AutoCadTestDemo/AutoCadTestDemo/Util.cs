@@ -12,18 +12,18 @@ using System.Text.RegularExpressions;
 
 namespace AutoCadTestDemo
 {
-    public abstract class Util
+    public class Util
     {
-        private static HSSFWorkbook hssfworkbook;
-        private static DataSet ds = new DataSet();
-        public static string oldCode = "";
-        public static string newCode = "";
+        private HSSFWorkbook hssfworkbook;
+        private DataSet ds = new DataSet();
+        public string oldCode = "";
+        public string newCode = "";
         //public static Bussiness.Rules rules = new Bussiness.Rules();
-        public static List<string> drwings = new List<string>();
-        private static Random rand = new Random(99999999);
-        private static MysqlOperate operate = new MysqlOperate();
+        public List<string> drwings = new List<string>();
+        private Random rand = new Random(99999999);
+        private MysqlOperate operate = new MysqlOperate();
 
-        private static string ReplaceStr(string oldCode)
+        private string ReplaceStr(string oldCode)
         {
             var startStr = oldCode.Substring(0, RegexCode());
             var endStr = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
@@ -45,11 +45,20 @@ namespace AutoCadTestDemo
             return startStr + endStr;
         }
 
-        private static string Rand()
+        private string Rand()
         {
             Random random = new Random();
-            if (RegexCode() == 2) return random.Next(10000, 99999).ToString();
-            else return random.Next(1000, 9999).ToString();
+            string result;
+            if (RegexCode() == 2)
+            {
+                result = random.Next(10000, 99999).ToString();
+            }
+            else
+            {
+                result = random.Next(1000, 9999).ToString();
+            }
+            System.Console.WriteLine("result = " + result);
+            return result;
         }
 
         /// <summary>
@@ -64,13 +73,13 @@ namespace AutoCadTestDemo
         /// 替换审核者、设计者、日期等属性
         /// </summary>
         /// <param name="entity"></param>
-        public static void ReplaceProperty(AcadEntity entity, AcadBlocks blocks, Bussiness.Rules rules)
+        public void ReplaceProperty(AcadEntity entity, AcadBlocks blocks, Bussiness.Rules rules)
         {
             if (entity.ObjectName == "AcDbBlockReference")
             {
                 var s = ((AcadBlockReference)entity);
-                var name = blocks.Item(s.Name).Name;
-                blocks.Item(s.Name).Name = rand.Next().ToString();
+                //var name = blocks.Item(s.Name).Name;
+                //blocks.Item(s.Name).Name = rand.Next().ToString();
                 if (s.HasAttributes)
                 {
                     AcadAttributeReference bb;
@@ -124,7 +133,7 @@ namespace AutoCadTestDemo
         /// <param name="entity"></param>
         /// <param name="acAppComObj"></param>
         /// <param name="ds"></param>
-        public static void ReplaceDrawingCode(AcadEntity entity, AcadApplication acAppComObj)
+        public void ReplaceDrawingCode(AcadEntity entity, AcadApplication acAppComObj)
         {
             if (entity.ObjectName == "AcmPartRef")
             {
@@ -141,7 +150,7 @@ namespace AutoCadTestDemo
         /// 读取Excel
         /// </summary>
         /// <param name="path"></param>
-        public static DataSet InitializeWorkbook(string path)
+        public DataSet InitializeWorkbook(string path)
         {
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
@@ -153,7 +162,7 @@ namespace AutoCadTestDemo
         /// <summary>
         /// 读取Excel数据转化为DataTable
         /// </summary>
-        static DataSet ConvertToDataTable()
+        DataSet ConvertToDataTable()
         {
             DataSet dsExcelValue = new DataSet();
             dsExcelValue.Tables.Clear();
@@ -188,14 +197,14 @@ namespace AutoCadTestDemo
             return dsExcelValue;
         }
 
-        static int RegexCode()
+        int RegexCode()
         {
             Regex regex = new Regex(@"^[A-Za-z]+$");
             if (regex.IsMatch(oldCode.Substring(0, 3))) return 3;
             else return 2;
         }
 
-        static string getByNewCode(string oldCode)
+        string getByNewCode(string oldCode)
         {
             string sql = "select newcode from code where oldcode='" + oldCode + "'";
             DataSet dataSet = MysqlDBUtil.Query(sql);
@@ -214,7 +223,7 @@ namespace AutoCadTestDemo
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        public static void GetAllFiles(DirectoryInfo dir)
+        public void GetAllFiles(DirectoryInfo dir)
         {
             List<HistoryDto> listHis = new List<HistoryDto>();
             FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
@@ -229,7 +238,7 @@ namespace AutoCadTestDemo
                     var extension = info.Extension;
                     if (extension.Equals(".dwg") || extension.Equals(".dwt") || extension.Equals(".dws") || extension.Equals(".dxf"))
                     {
-                        if (Util.GetDrwingsDto(info.Name) == null)
+                        if (GetDrwingsDto(info.Name) == null)
                         {
                             HistoryDto dto = new HistoryDto();
                             dto.Id = Guid.NewGuid().ToString();
@@ -245,7 +254,7 @@ namespace AutoCadTestDemo
             listHis.Clear();
         }
 
-        public static List<HistoryDto> RandomSortList(List<HistoryDto> listHis)
+        public List<HistoryDto> RandomSortList(List<HistoryDto> listHis)
         {
             Random random = new Random();
             List<HistoryDto> newList = new List<HistoryDto>();
@@ -260,7 +269,7 @@ namespace AutoCadTestDemo
         /// 添加历史记录
         /// </summary>
         /// <param name="dto"></param>
-        public static void InsertHistory(List<HistoryDto> dtos)
+        public void InsertHistory(List<HistoryDto> dtos)
         {
             //MysqlOperate operate = new MysqlOperate();
             List<HistoryDto> list = RandomSortList(dtos);
@@ -273,32 +282,32 @@ namespace AutoCadTestDemo
         /// 添加新的图纸编号
         /// </summary>
         /// <param name="dto"></param>
-        public static void InsertCode(CodeDto dto)
+        public void InsertCode(CodeDto dto)
         {
             //MysqlOperate operate = new MysqlOperate();
             operate.InsertCode(dto);
         }
 
-        public static void GetDrwingsList()
+        public void GetDrwingsList()
         {
             //MysqlOperate operate = new MysqlOperate();
             drwings = operate.GetDrwingsList();
         }
 
-        public static HistoryDto GetDrwingsDto(string path)
+        public HistoryDto GetDrwingsDto(string path)
         {
             //MysqlOperate operate = new MysqlOperate();
             HistoryDto dto = operate.GetDrwingsDto(path);
             return dto;
         }
 
-        public static void UpdateHistory(HistoryDto dto)
+        public void UpdateHistory(HistoryDto dto)
         {
             //MysqlOperate operate = new MysqlOperate();
             operate.UpdateHistory(dto);
         }
 
-        public static string SplitCode(string value)
+        public string SplitCode(string value)
         {
             Regex regex = new Regex(@"^[A-Za-z]+$");
             if (regex.IsMatch(value.Substring(0, 3))) return value.Substring(0, 3);

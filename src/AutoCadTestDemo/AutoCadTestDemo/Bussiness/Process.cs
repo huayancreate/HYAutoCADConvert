@@ -17,8 +17,16 @@ namespace AutoCadTestDemo.Bussiness
         private Rules rules;
         private AbstractTask task;
         private AcadApplication acAppComObj = null;
+        private Util util;
+        private WaitHandle[] handles;
 
-        private void Open()
+        public WaitHandle[] Handles
+        {
+            get { return handles; }
+            set { handles = value; }
+        }
+
+        public void Open()
         {
             const string strProgId = "AutoCAD.Application";
             //获取正在运行的AutoCAD实例；
@@ -53,20 +61,22 @@ namespace AutoCadTestDemo.Bussiness
 
         private void InitProcess()
         {
+            util = new Util();
+            handles = new WaitHandle[10];
             this.Open();
+            Thread.Sleep(10000);
             string filePath = ConfigurationManager.AppSettings["filePath"].ToString();
             DirectoryInfo dir = new DirectoryInfo(filePath);
-            Util.GetAllFiles(dir);
-            Util.GetDrwingsList();
-            List<string> list = Util.drwings;
-            Thread.Sleep(2000);
+            util.GetAllFiles(dir);
+            util.GetDrwingsList();
+            List<string> list = util.drwings;
         }
 
         private void Run()
         {
-            foreach (AbstractTask task in taskList)
+            for (int i = 0; i < taskList.Count;i++ )
             {
-                task.Run();
+                ThreadPool.QueueUserWorkItem(task.GetWaitCallback(), handles[i]);
             }
 
         }
@@ -85,7 +95,7 @@ namespace AutoCadTestDemo.Bussiness
         {
             //TODO
             Rules rules = new Rules();
-            DataSet ds = Util.InitializeWorkbook(ConfigurationManager.AppSettings["xls"].ToString());
+            DataSet ds = util.InitializeWorkbook(ConfigurationManager.AppSettings["xls"].ToString());
             int count = ds.Tables[0].Rows.Count;
             for (int i = 1; i < count; i++)//从第二行开始读取数据
             {
@@ -99,17 +109,20 @@ namespace AutoCadTestDemo.Bussiness
         private void InitTask()
         {
             //TODO 获取需要执行的任务
-            List<string> drwings = Util.drwings;
+            List<string> drwings = this.util.drwings;
             //drwings.Add(@"C:\Users\wliu\Desktop\chengxu\新建文件夹\DRU0000562.dwg");
             for (int i = 0; i < drwings.Count; i++)
             {
                 task = TaskFactroy.CreateTaskByType(TaskType.DefaultTask);
                 task.AbsPath = drwings[i];
-                task.AcAppComObj = this.acAppComObj;
                 task.SavePath = ConfigurationManager.AppSettings["savePath"].ToString();
                 task.SetDefaultRules(rules);
                 task.TaskName = "drwing_" + i;
+                task.AcAppComObj = this.acAppComObj;
+                task.Item = i;
+                handles.SetValue(new AutoResetEvent(false), i);
                 task.Init();
+                task.SetWaitCallback();
                 taskList.Add(task);
             }
         }

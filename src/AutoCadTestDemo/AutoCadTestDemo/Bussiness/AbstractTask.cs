@@ -15,6 +15,54 @@ namespace AutoCadTestDemo.Bussiness
         private string taskName;
         private string absPath;
         private AcadApplication acAppComObj;
+        private Process parentProcess;
+        public bool flag = false;
+        private int item;
+        private Util util;
+        private string saveName;
+        private ManualResetEvent doneEvent;
+
+        public ManualResetEvent DoneEvent
+        {
+            get { return doneEvent; }
+            set { doneEvent = value; }
+        }
+
+        public string SaveName
+        {
+            get { return saveName; }
+            set { saveName = value; }
+        }
+
+        public Util Util
+        {
+            get { return util; }
+            set { util = value; }
+        }
+
+        public int Item
+        {
+            get { return item; }
+            set { item = value; }
+        }
+
+        
+
+        public void SetWaitCallback()
+        {
+            this.waitCallback = new WaitCallback(Run);
+        }
+
+        public WaitCallback GetWaitCallback()
+        {
+            return waitCallback;
+        }
+
+        public Process ParentProcess
+        {
+            get { return parentProcess; }
+            set { parentProcess = value; }
+        }
 
         public AcadApplication AcAppComObj
         {
@@ -54,7 +102,17 @@ namespace AutoCadTestDemo.Bussiness
             {
                 defaultRules = singleRules;
             }
-            //this.Open();
+            this.Util = new Util();
+            try
+            {
+                this.AcadDoc = this.AcAppComObj.Documents.Open(this.AbsPath);
+            }
+            catch (Exception ex)
+            {
+                //移动文件
+                this.flag = false;
+                return;
+            }
         }
 
         public void SetDefaultRules(Rules rules)
@@ -67,6 +125,13 @@ namespace AutoCadTestDemo.Bussiness
             return this.defaultRules;
         }
 
-        public abstract void Run();
+        public abstract void Run( object state ) ;
+
+        internal void Save()
+        {
+                AcAppComObj.Documents.Item(Item).SaveAs(this.SaveName, AcSaveAsType.ac2013_dwg, null);
+                this.AcadDoc.Close();
+                GC.Collect();
+        }
     }
 }

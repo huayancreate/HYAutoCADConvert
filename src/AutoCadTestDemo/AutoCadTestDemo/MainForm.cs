@@ -17,6 +17,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using AutoCadTestDemo.Bussiness;
 
 namespace AutoCadTestDemo
 {
@@ -133,8 +134,8 @@ namespace AutoCadTestDemo
                     //3.处理情况保存
                     //InsertHistory(dto);
                     codeDto.Id = Guid.NewGuid().ToString();
-                    codeDto.OldCode = Util.oldCode;
-                    codeDto.NewCode = Util.newCode;
+                    //codeDto.OldCode = Util.oldCode;
+                    //codeDto.NewCode = Util.newCode;
                     //InsertCode(codeDto);
                 }
                 catch (Exception ex)
@@ -150,7 +151,7 @@ namespace AutoCadTestDemo
                 //判断是否需要保存，如需要则另存为
                 if (acAppComObj.ActiveDocument.Saved == false)
                 {
-                    acAppComObj.ActiveDocument.SaveAs(txtSavePath.Text + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
+                    //acAppComObj.ActiveDocument.SaveAs(txtSavePath.Text + "\\" + this.util.newCode, AcSaveAsType.ac2013_dwg, null);
                     GC.Collect();
                 }
             }
@@ -362,7 +363,7 @@ namespace AutoCadTestDemo
 
         private void btnImportExcel_Click(object sender, EventArgs e)
         {
-            Util.InitializeWorkbook(@"C:\Users\wliu\Desktop\修改的编号.xls");
+           // this.util.InitializeWorkbook(@"C:\Users\wliu\Desktop\修改的编号.xls");
         }
     }
 }
