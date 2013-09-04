@@ -19,15 +19,21 @@ namespace AutoCadTestDemo
             MysqlDBUtil.ExecuteSql(strSql);
         }
 
-        public List<string> GetDrwingsList()
+        public List<HistoryDto> GetDrwingsList()
         {
             var strSql = "SELECT filepath FROM history";
             DataSet ds = MysqlDBUtil.Query(strSql);
-            List<string> _list = new List<string>();
+            List<HistoryDto> _list = new List<HistoryDto>();
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
-                _list.Add(ds.Tables[0].Rows[i][0].ToString());
+                HistoryDto dto = new HistoryDto();
+                dto.Id = ds.Tables[0].Rows[i]["id"].ToString();
+                dto.FileName = ds.Tables[0].Rows[i]["filename"].ToString();
+                dto.FilePath = ds.Tables[0].Rows[i]["filepath"].ToString();
+                dto.FileStatus = ds.Tables[0].Rows[i]["id"].ToString();
+                _list.Add(dto);
             }
+            //_list.Add(ds.Tables[0].Rows[i][0].ToString());
             return _list;
         }
         public HistoryDto GetDrwingsDto(string filename)

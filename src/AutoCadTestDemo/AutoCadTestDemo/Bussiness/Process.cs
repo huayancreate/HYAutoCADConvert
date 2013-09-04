@@ -54,19 +54,26 @@ namespace AutoCadTestDemo.Bussiness
         private void InitProcess()
         {
             this.Open();
+            Thread.Sleep(10000);
             string filePath = ConfigurationManager.AppSettings["filePath"].ToString();
             DirectoryInfo dir = new DirectoryInfo(filePath);
             Util.GetAllFiles(dir);
             Util.GetDrwingsList();
-            List<string> list = Util.drwings;
-            Thread.Sleep(2000);
+            List<HistoryDto> list = Util.drwings;
         }
 
         private void Run()
         {
             foreach (AbstractTask task in taskList)
             {
+                task.AcAppComObj = this.acAppComObj;
                 task.Run();
+                if (!task.KillFlag)
+                {
+                    this.acAppComObj = null;
+                    this.Open();
+                    Thread.Sleep(10000);
+                }
             }
 
         }
@@ -99,16 +106,16 @@ namespace AutoCadTestDemo.Bussiness
         private void InitTask()
         {
             //TODO 获取需要执行的任务
-            List<string> drwings = Util.drwings;
+            List<HistoryDto> drwings = Util.drwings;
             //drwings.Add(@"C:\Users\wliu\Desktop\chengxu\新建文件夹\DRU0000562.dwg");
             for (int i = 0; i < drwings.Count; i++)
             {
                 task = TaskFactroy.CreateTaskByType(TaskType.DefaultTask);
-                task.AbsPath = drwings[i];
+                task.AbsPath = drwings[i].FilePath;
                 task.AcAppComObj = this.acAppComObj;
                 task.SavePath = ConfigurationManager.AppSettings["savePath"].ToString();
                 task.SetDefaultRules(rules);
-                task.TaskName = "drwing_" + i;
+                task.TaskName = drwings[i].FileName;
                 task.Init();
                 taskList.Add(task);
             }

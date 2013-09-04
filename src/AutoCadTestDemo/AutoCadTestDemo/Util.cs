@@ -19,7 +19,7 @@ namespace AutoCadTestDemo
         public static string oldCode = "";
         public static string newCode = "";
         //public static Bussiness.Rules rules = new Bussiness.Rules();
-        public static List<string> drwings = new List<string>();
+        public static List<HistoryDto> drwings = new List<HistoryDto>();
         private static Random rand = new Random(99999999);
         private static MysqlOperate operate = new MysqlOperate();
 

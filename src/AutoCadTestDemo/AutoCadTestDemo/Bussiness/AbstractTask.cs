@@ -15,6 +15,13 @@ namespace AutoCadTestDemo.Bussiness
         private string taskName;
         private string absPath;
         private AcadApplication acAppComObj;
+        private bool killFlag;
+
+        public bool KillFlag
+        {
+            get { return killFlag; }
+            set { killFlag = value; }
+        }
 
         public AcadApplication AcAppComObj
         {
