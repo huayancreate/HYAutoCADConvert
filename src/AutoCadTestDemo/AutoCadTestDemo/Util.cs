@@ -278,6 +278,15 @@ namespace AutoCadTestDemo
             //MysqlOperate operate = new MysqlOperate();
             operate.InsertCode(dto);
         }
+        public static void InsertCode(string oldCode, string newCode)
+        {
+            CodeDto dto = new CodeDto();
+            dto.Id = Guid.NewGuid().ToString();
+            dto.OldCode = oldCode;
+            dto.NewCode = newCode;
+            //MysqlOperate operate = new MysqlOperate();
+            operate.InsertCode(dto);
+        }
 
         public static void GetDrwingsList()
         {
@@ -303,6 +312,19 @@ namespace AutoCadTestDemo
             Regex regex = new Regex(@"^[A-Za-z]+$");
             if (regex.IsMatch(value.Substring(0, 3))) return value.Substring(0, 3);
             else return value.Substring(0, 2);
+        }
+
+        /// <summary>
+        /// 文件移动
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="newPath"></param>
+        public static void MoveFile(string path, string newPath)
+        {
+            if (File.Exists(path))
+            {
+                File.Copy(path, newPath, true);
+            }
         }
     }
 }

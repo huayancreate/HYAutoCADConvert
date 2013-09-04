@@ -362,7 +362,8 @@ namespace AutoCadTestDemo
 
         private void btnImportExcel_Click(object sender, EventArgs e)
         {
-            Util.InitializeWorkbook(@"C:\Users\wliu\Desktop\修改的编号.xls");
+            Util.MoveFile(@"C:\Users\wliu\Desktop\修改的编号.xls", @"C:\Users\wliu\Desktop\test\修改的编号.xls");
+            //Util.InitializeWorkbook(@"C:\Users\wliu\Desktop\修改的编号.xls");
         }
     }
 }

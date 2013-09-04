@@ -22,7 +22,7 @@ namespace AutoCadTestDemo.Bussiness
                     foreach (AcadEntity entity in block)
                     {
                         //2.替换审核者、设计者、日期等属性
-                        Util.ReplaceProperty(entity, blocks,this.GetDefaultRules());
+                        Util.ReplaceProperty(entity, blocks, this.GetDefaultRules());
                         //3.替换装配图中的明细表中的编号
                         Util.ReplaceDrawingCode(entity, AcAppComObj);
                         entity.Update();
@@ -30,7 +30,11 @@ namespace AutoCadTestDemo.Bussiness
                 }
                 dto.FileStatus = "处理完成";
                 dto.FilePath = dto.FilePath.Replace("\\", "\\\\");
+                //4.更新处理状态
                 Util.UpdateHistory(dto);
+                //5.保存处理后的图纸编号
+                Util.InsertCode(Util.oldCode, Util.newCode);
+
                 var fileName = Util.SplitCode(Util.newCode);
                 if (AcAppComObj.ActiveDocument.Saved == false)
                 {
@@ -45,7 +49,8 @@ namespace AutoCadTestDemo.Bussiness
                 dto.FileStatus = "处理失败," + ex.Message;
                 dto.FilePath = dto.FilePath.Replace("\\", "\\\\");
                 Util.UpdateHistory(dto);
-                AcAppComObj.ActiveDocument.SaveAs(this.SavePath + "失败的图纸文件" + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
+                Util.MoveFile(AbsPath, this.SavePath + "失败的图纸文件" + "\\" + AcadDoc.Name);
+                //AcAppComObj.ActiveDocument.SaveAs(this.SavePath + "失败的图纸文件" + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
                 this.AcadDoc.Close();
             }
         }
