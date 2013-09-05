@@ -21,16 +21,16 @@ namespace AutoCadTestDemo
 
         public List<HistoryDto> GetDrwingsList()
         {
-            var strSql = "SELECT filepath FROM history";
+            var strSql = "SELECT * FROM history";
             DataSet ds = MysqlDBUtil.Query(strSql);
             List<HistoryDto> _list = new List<HistoryDto>();
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
                 HistoryDto dto = new HistoryDto();
-                dto.Id = ds.Tables[0].Rows[i]["id"].ToString();
-                dto.FileName = ds.Tables[0].Rows[i]["filename"].ToString();
-                dto.FilePath = ds.Tables[0].Rows[i]["filepath"].ToString();
-                dto.FileStatus = ds.Tables[0].Rows[i]["id"].ToString();
+                dto.Id = ds.Tables[0].Rows[i]["Id"].ToString();
+                dto.FileName = ds.Tables[0].Rows[i]["FileName"].ToString();
+                dto.FilePath = ds.Tables[0].Rows[i]["FilePath"].ToString();
+                dto.FileStatus = ds.Tables[0].Rows[i]["FileStatus"].ToString();
                 _list.Add(dto);
             }
             //_list.Add(ds.Tables[0].Rows[i][0].ToString());
@@ -43,10 +43,10 @@ namespace AutoCadTestDemo
             DataSet ds = MysqlDBUtil.Query(strSql);
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
-                dto.Id = ds.Tables[0].Rows[i]["id"].ToString();
-                dto.FileName = ds.Tables[0].Rows[i]["filename"].ToString();
-                dto.FilePath = ds.Tables[0].Rows[i]["filepath"].ToString();
-                dto.FileStatus = ds.Tables[0].Rows[i]["id"].ToString();
+                dto.Id = ds.Tables[0].Rows[i]["Id"].ToString();
+                dto.FileName = ds.Tables[0].Rows[i]["FileName"].ToString();
+                dto.FilePath = ds.Tables[0].Rows[i]["FilePath"].ToString();
+                dto.FileStatus = ds.Tables[0].Rows[i]["FileStatus"].ToString();
                 return dto;
             }
             return null;
