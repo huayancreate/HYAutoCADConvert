@@ -9,8 +9,10 @@ using System.Data;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Common;
 
-namespace AutoCadTestDemo
+
+namespace AutoCadConvert
 {
     public abstract class Util
     {
@@ -18,47 +20,48 @@ namespace AutoCadTestDemo
         private static DataSet ds = new DataSet();
         public static string oldCode = "";
         public static string newCode = "";
-        //public static Bussiness.Rules rules = new Bussiness.Rules();
+        static List<HistoryDto> listHis = new List<HistoryDto>();
+        public static Bussiness.Rules rules = new Bussiness.Rules();
         public static List<HistoryDto> drwings = new List<HistoryDto>();
         private static Random rand = new Random(99999999);
         private static MysqlOperate operate = new MysqlOperate();
 
-        private static string ReplaceStr(string oldCode)
-        {
-            var startStr = oldCode.Substring(0, RegexCode());
-            var endStr = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
-            if (endStr.Contains("O") || endStr.Contains("o"))
-            {
-                endStr = endStr.Replace("o", "0");
-                endStr = endStr.Replace("O", "0");
-            }
-            if (endStr.Contains("I") || endStr.Contains("i"))
-            {
-                endStr = endStr.Replace("I", "1");
-                endStr = endStr.Replace("i", "1");
-            }
-            if (endStr.Contains("Z") || endStr.Contains("z"))
-            {
-                endStr = endStr.Replace("Z", "2");
-                endStr = endStr.Replace("z", "2");
-            }
-            return startStr + endStr;
-        }
+        //private static string ReplaceStr(string oldCode)
+        //{
+        //    var startStr = oldCode.Substring(0, RegexCode());
+        //    var endStr = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
+        //    if (endStr.Contains("O") || endStr.Contains("o"))
+        //    {
+        //        endStr = endStr.Replace("o", "0");
+        //        endStr = endStr.Replace("O", "0");
+        //    }
+        //    if (endStr.Contains("I") || endStr.Contains("i"))
+        //    {
+        //        endStr = endStr.Replace("I", "1");
+        //        endStr = endStr.Replace("i", "1");
+        //    }
+        //    if (endStr.Contains("Z") || endStr.Contains("z"))
+        //    {
+        //        endStr = endStr.Replace("Z", "2");
+        //        endStr = endStr.Replace("z", "2");
+        //    }
+        //    return startStr + endStr;
+        //}
 
-        private static string Rand()
-        {
-            Random random = new Random();
-            if (RegexCode() == 2) return random.Next(10000, 99999).ToString();
-            else return random.Next(1000, 9999).ToString();
-        }
+        //private static string Rand()
+        //{
+        //    Random random = new Random();
+        //    if (RegexCode() == 2) return random.Next(10000, 99999).ToString();
+        //    else return random.Next(1000, 9999).ToString();
+        //}
 
         /// <summary>
         /// 图纸类型
         /// </summary>
-        public enum DrawingType
-        {
-            Parts, Assembly
-        }
+        //public enum DrawingType
+        //{
+        //    Parts, Assembly
+        //}
 
         /// <summary>
         /// 替换审核者、设计者、日期等属性
@@ -87,19 +90,26 @@ namespace AutoCadTestDemo
                             if (bb.TagString == "---------")
                             {
                                 oldCode = bb.TextString;
-                                oldCode = ReplaceStr(oldCode);
-                                var startCode = oldCode.Substring(0, RegexCode());
-                                var endCode = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
-                                Hashtable hash = rules.GetRules();
-                                foreach (DictionaryEntry de in hash)
+                                var dto = GetDrwingsDto(entity.Document.Name);
+                                if (dto != null)
                                 {
-                                    if (startCode == de.Key.ToString())
-                                    {
-                                        startCode = de.Value.ToString();
-                                    }
+                                    if (!string.IsNullOrEmpty(dto.FileCode)) bb.TextString = dto.FileCode;
+                                    newCode = dto.FileCode;
                                 }
-                                newCode = startCode + "0" + Rand();
-                                if (!string.IsNullOrEmpty(newCode)) bb.TextString = newCode;
+                                //oldCode = bb.TextString;
+                                //oldCode = ReplaceStr(oldCode);
+                                //var startCode = oldCode.Substring(0, RegexCode());
+                                //var endCode = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
+                                //Hashtable hash = rules.GetRules();
+                                //foreach (DictionaryEntry de in hash)
+                                //{
+                                //    if (startCode == de.Key.ToString())
+                                //    {
+                                //        startCode = de.Value.ToString();
+                                //    }
+                                //}
+                                //newCode = startCode + "0" + Rand();
+                                //if (!string.IsNullOrEmpty(newCode)) bb.TextString = newCode;
                             }
                         }
                     }
@@ -188,12 +198,12 @@ namespace AutoCadTestDemo
             return dsExcelValue;
         }
 
-        static int RegexCode()
-        {
-            Regex regex = new Regex(@"^[A-Za-z]+$");
-            if (regex.IsMatch(oldCode.Substring(0, 3))) return 3;
-            else return 2;
-        }
+        //static int RegexCode()
+        //{
+        //    Regex regex = new Regex(@"^[A-Za-z]+$");
+        //    if (regex.IsMatch(oldCode.Substring(0, 3))) return 3;
+        //    else return 2;
+        //}
 
         static string getByNewCode(string oldCode)
         {
@@ -214,36 +224,81 @@ namespace AutoCadTestDemo
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        public static void GetAllFiles(DirectoryInfo dir)
+        public static void GetAllFiles(DirectoryInfo dir, Bussiness.Rules rules)
         {
-            List<HistoryDto> listHis = new List<HistoryDto>();
-            FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
-            foreach (FileSystemInfo info in fileinfo)
+            var flag = 0;
+            foreach (DirectoryInfo dirSub in dir.GetDirectories())
             {
-                if (info is DirectoryInfo)
+                flag = 0;
+                foreach (FileInfo file in dirSub.GetFiles())
                 {
-                    GetAllFiles((DirectoryInfo)info);
-                }
-                else
-                {
-                    var extension = info.Extension;
+                    var extension = file.Extension;
                     if (extension.Equals(".dwg") || extension.Equals(".dwt") || extension.Equals(".dws") || extension.Equals(".dxf"))
                     {
-                        if (Util.GetDrwingsDto(info.Name) == null)
+                        flag++;
+                        if (Util.GetDrwingsDto(file.Name) == null)
                         {
                             HistoryDto dto = new HistoryDto();
                             dto.Id = Guid.NewGuid().ToString();
-                            dto.FileName = info.Name;
-                            dto.FilePath = info.FullName.Replace("\\", "\\\\");
-                            dto.FileStatus = "未处理";
+                            dto.FileName = file.Name;
+                            dto.FilePath = file.FullName.Replace("\\", "\\\\");
+                            dto.FileTips = "未处理";
+                            dto.FileStatus = "0";//0：未处理，1：已处理
+                            var startCode = SplitCode(file.Name);
+                            foreach (DictionaryEntry de in rules.GetRules())
+                            {
+                                if (startCode == de.Key.ToString())
+                                {
+                                    startCode = de.Value.ToString();
+                                }
+                            }
+                            if (startCode.Length == 2)
+                            {
+                                dto.FileCode = startCode + string.Format("{0:D6}", flag);
+                            }
+                            else
+                            {
+                                dto.FileCode = startCode + string.Format("{0:D5}", flag);
+                            }
                             listHis.Add(dto);
                         }
                     }
                 }
+                GetAllFiles(dirSub, rules);
             }
             InsertHistory(listHis);
             listHis.Clear();
         }
+        //public static void GetAllFiles(DirectoryInfo dir)
+        //{
+        //    List<HistoryDto> listHis = new List<HistoryDto>();
+        //    FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
+        //    foreach (FileSystemInfo info in fileinfo)
+        //    {
+        //        if (info is DirectoryInfo)
+        //        {
+        //            GetAllFiles((DirectoryInfo)info);
+        //        }
+        //        else
+        //        {
+        //            var extension = info.Extension;
+        //            if (extension.Equals(".dwg") || extension.Equals(".dwt") || extension.Equals(".dws") || extension.Equals(".dxf"))
+        //            {
+        //                if (Util.GetDrwingsDto(info.Name) == null)
+        //                {
+        //                    HistoryDto dto = new HistoryDto();
+        //                    dto.Id = Guid.NewGuid().ToString();
+        //                    dto.FileName = info.Name;
+        //                    dto.FilePath = info.FullName.Replace("\\", "\\\\");
+        //                    dto.FileStatus = "未处理";
+        //                    listHis.Add(dto);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    InsertHistory(listHis);
+        //    listHis.Clear();
+        //}
 
         public static List<HistoryDto> RandomSortList(List<HistoryDto> listHis)
         {
@@ -262,7 +317,6 @@ namespace AutoCadTestDemo
         /// <param name="dto"></param>
         public static void InsertHistory(List<HistoryDto> dtos)
         {
-            //MysqlOperate operate = new MysqlOperate();
             List<HistoryDto> list = RandomSortList(dtos);
             foreach (HistoryDto dto in list)
             {
@@ -275,7 +329,6 @@ namespace AutoCadTestDemo
         /// <param name="dto"></param>
         public static void InsertCode(CodeDto dto)
         {
-            //MysqlOperate operate = new MysqlOperate();
             operate.InsertCode(dto);
         }
         public static void InsertCode(string oldCode, string newCode)
@@ -284,26 +337,24 @@ namespace AutoCadTestDemo
             dto.Id = Guid.NewGuid().ToString();
             dto.OldCode = oldCode;
             dto.NewCode = newCode;
-            //MysqlOperate operate = new MysqlOperate();
             operate.InsertCode(dto);
         }
 
-        public static void GetDrwingsList()
+        public static List<HistoryDto> GetDrwingsList(int currentPage)
         {
-            //MysqlOperate operate = new MysqlOperate();
-            drwings = operate.GetDrwingsList();
+            int pageSize = 10;
+            List<HistoryDto> drwings = operate.Page(currentPage, pageSize);
+            return drwings;
         }
 
-        public static HistoryDto GetDrwingsDto(string path)
+        public static HistoryDto GetDrwingsDto(string filename)
         {
-            //MysqlOperate operate = new MysqlOperate();
-            HistoryDto dto = operate.GetDrwingsDto(path);
+            HistoryDto dto = operate.GetDrwingsDto(filename);
             return dto;
         }
 
         public static void UpdateHistory(HistoryDto dto)
         {
-            //MysqlOperate operate = new MysqlOperate();
             operate.UpdateHistory(dto);
         }
 
@@ -325,6 +376,16 @@ namespace AutoCadTestDemo
             {
                 File.Copy(path, newPath, true);
             }
+        }
+
+        public static void InitDateTime()
+        {
+            operate.InitDateTime();
+        }
+
+        public static DateTime GetInitTime()
+        {
+            return operate.GetInitDateTime();
         }
     }
 }

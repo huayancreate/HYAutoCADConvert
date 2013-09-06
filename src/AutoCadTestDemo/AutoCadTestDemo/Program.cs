@@ -3,7 +3,7 @@ using System.Collections.Generic;
 //using System.Linq;
 using System.Windows.Forms;
 
-namespace AutoCadTestDemo
+namespace AutoCadConvert
 {
     static class Program
     {
@@ -13,10 +13,12 @@ namespace AutoCadTestDemo
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new MainForm());
             //Application.Run(new Form1());
+            Bussiness.Process p = new Bussiness.Process();
+            p.Init();
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AutoCadTestDemo
+namespace AutoCadConvert
 {
     public class HistoryDto
     {
@@ -33,6 +33,22 @@ namespace AutoCadTestDemo
         {
             get { return fileStatus; }
             set { fileStatus = value; }
+        }
+
+        private string fileCode;
+
+        public string FileCode
+        {
+            get { return fileCode; }
+            set { fileCode = value; }
+        }
+
+        private string fileTips;
+
+        public string FileTips
+        {
+            get { return fileTips; }
+            set { fileTips = value; }
         }
     }
 }

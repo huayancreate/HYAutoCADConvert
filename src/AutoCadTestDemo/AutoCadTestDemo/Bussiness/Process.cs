@@ -1,5 +1,6 @@
 ﻿using AutoCAD;
-using AutoCadTestDemo.Config;
+using AutoCadConvert.Config;
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace AutoCadTestDemo.Bussiness
+namespace AutoCadConvert.Bussiness
 {
     public class Process
     {
@@ -17,6 +18,7 @@ namespace AutoCadTestDemo.Bussiness
         private Rules rules;
         private AbstractTask task;
         private AcadApplication acAppComObj = null;
+        private int currentPage = 0;
 
         private void Open()
         {
@@ -44,11 +46,11 @@ namespace AutoCadTestDemo.Bussiness
 
         public void Init()
         {
+            if (Util.GetInitTime() == null) Util.InitDateTime();
+            InitRules();
             InitProcess();
             InitThreadPool();
-            InitRules();
             InitTask();
-            Run();
         }
 
         private void InitProcess()
@@ -57,13 +59,15 @@ namespace AutoCadTestDemo.Bussiness
             Thread.Sleep(10000);
             string filePath = ConfigurationManager.AppSettings["filePath"].ToString();
             DirectoryInfo dir = new DirectoryInfo(filePath);
-            Util.GetAllFiles(dir);
-            Util.GetDrwingsList();
-            List<HistoryDto> list = Util.drwings;
+            Util.GetAllFiles(dir, rules);
         }
 
         private void Run()
         {
+            if (taskList.Count == 0)
+            {
+                return;
+            }
             foreach (AbstractTask task in taskList)
             {
                 task.AcAppComObj = this.acAppComObj;
@@ -75,7 +79,9 @@ namespace AutoCadTestDemo.Bussiness
                     Thread.Sleep(10000);
                 }
             }
-
+            taskList.Clear();
+            currentPage++;
+            InitTask();
         }
 
         private void InitThreadPool()
@@ -92,6 +98,8 @@ namespace AutoCadTestDemo.Bussiness
         {
             //TODO
             Rules rules = new Rules();
+            if (!File.Exists(ConfigurationManager.AppSettings["xls"].ToString()))
+                return null;
             DataSet ds = Util.InitializeWorkbook(ConfigurationManager.AppSettings["xls"].ToString());
             int count = ds.Tables[0].Rows.Count;
             for (int i = 1; i < count; i++)//从第二行开始读取数据
@@ -106,8 +114,7 @@ namespace AutoCadTestDemo.Bussiness
         private void InitTask()
         {
             //TODO 获取需要执行的任务
-            List<HistoryDto> drwings = Util.drwings;
-            //drwings.Add(@"C:\Users\wliu\Desktop\chengxu\新建文件夹\DRU0000562.dwg");
+            List<HistoryDto> drwings = Util.GetDrwingsList(currentPage);
             for (int i = 0; i < drwings.Count; i++)
             {
                 task = TaskFactroy.CreateTaskByType(TaskType.DefaultTask);
@@ -119,6 +126,7 @@ namespace AutoCadTestDemo.Bussiness
                 task.Init();
                 taskList.Add(task);
             }
+            Run();
         }
         private void CreateDir(string name)
         {

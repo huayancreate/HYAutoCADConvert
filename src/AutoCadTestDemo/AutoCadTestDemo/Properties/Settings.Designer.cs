@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AutoCadTestDemo.Properties {
+namespace AutoCadConvert.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

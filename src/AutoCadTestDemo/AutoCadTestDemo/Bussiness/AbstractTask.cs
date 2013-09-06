@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace AutoCadTestDemo.Bussiness
+namespace AutoCadConvert.Bussiness
 {
     public abstract class AbstractTask
     {

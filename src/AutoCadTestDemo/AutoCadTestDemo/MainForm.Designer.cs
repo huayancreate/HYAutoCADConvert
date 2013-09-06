@@ -1,4 +1,4 @@
-﻿namespace AutoCadTestDemo
+﻿namespace AutoCadConvert
 {
     partial class MainForm
     {

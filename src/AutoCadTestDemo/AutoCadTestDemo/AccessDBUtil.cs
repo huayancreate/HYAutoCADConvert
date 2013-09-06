@@ -4,12 +4,12 @@ using System.Data;
 using System.Data.OleDb;
 using System.Text;
 
-namespace AutoCadTestDemo
+namespace AutoCadConvert
 {
     public class AccessDBUtil
     {
         private static String connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=Autocad.mdb";
-        //private static String connectionString = AutoCadTestDemo.Properties.Settings.Default;
+        //private static String connectionString = AutoCadConvert.Properties.Settings.Default;
         private AccessDBUtil()
         {
         }

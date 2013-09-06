@@ -1,10 +1,11 @@
 ﻿using AutoCAD;
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace AutoCadTestDemo.Bussiness
+namespace AutoCadConvert.Bussiness
 {
     public class DefaultTask : AbstractTask
     {
@@ -24,8 +25,9 @@ namespace AutoCadTestDemo.Bussiness
             }
             catch (Exception ex)
             {
-                dto.FileStatus = "处理失败," + ex.Message;
+                dto.FileTips= "处理失败," + ex.Message;
                 dto.FilePath = dto.FilePath.Replace("\\", "\\\\");
+                dto.FileStatus = "1";
                 Util.UpdateHistory(dto);
                 Util.MoveFile(AbsPath, this.SavePath + "失败的图纸文件" + "\\" + this.TaskName);
                 //AcAppComObj.ActiveDocument.SaveAs(this.SavePath + "失败的图纸文件" + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
@@ -35,7 +37,7 @@ namespace AutoCadTestDemo.Bussiness
             //TODO 相应方法
             this.KillFlag = true;
             AcadBlocks blocks = this.AcadDoc.Blocks;
-            
+
             //HistoryDto dto = Util.GetDrwingsDto(AcadDoc.Name);
             try
             {
@@ -50,8 +52,9 @@ namespace AutoCadTestDemo.Bussiness
                         entity.Update();
                     }
                 }
-                dto.FileStatus = "处理完成";
+                dto.FileTips = "处理完成";
                 dto.FilePath = dto.FilePath.Replace("\\", "\\\\");
+                dto.FileStatus = "1";
                 //4.更新处理状态
                 Util.UpdateHistory(dto);
                 //5.保存处理后的图纸编号
@@ -68,8 +71,9 @@ namespace AutoCadTestDemo.Bussiness
             }
             catch (Exception ex)
             {
-                dto.FileStatus = "处理失败," + ex.Message;
+                dto.FileTips = "处理失败," + ex.Message;
                 dto.FilePath = dto.FilePath.Replace("\\", "\\\\");
+                dto.FileStatus = "1";
                 Util.UpdateHistory(dto);
                 Util.MoveFile(AbsPath, this.SavePath + "失败的图纸文件" + "\\" + AcadDoc.Name);
                 //AcAppComObj.ActiveDocument.SaveAs(this.SavePath + "失败的图纸文件" + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);

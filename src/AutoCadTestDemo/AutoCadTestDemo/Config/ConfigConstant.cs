@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AutoCadTestDemo.Config
+namespace AutoCadConvert.Config
 {
     public static class ConfigConstant
     {

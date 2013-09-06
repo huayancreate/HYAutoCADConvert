@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 using System.Collections;
 using System.Data;
 
-namespace AutoCadTestDemo
+namespace AutoCadConvert
 {
     public abstract class MysqlDBUtil
     {
