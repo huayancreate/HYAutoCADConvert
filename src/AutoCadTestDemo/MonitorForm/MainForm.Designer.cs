@@ -31,7 +31,9 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnSystemConfig = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
+            this.tmrLoad = new System.Timers.Timer();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tmrLoad)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -61,6 +63,13 @@
             this.MainPanel.Size = new System.Drawing.Size(653, 320);
             this.MainPanel.TabIndex = 1;
             // 
+            // tmrLoad
+            // 
+            this.tmrLoad.Enabled = true;
+            this.tmrLoad.Interval = 5000D;
+            this.tmrLoad.SynchronizingObject = this;
+            this.tmrLoad.Elapsed += new System.Timers.ElapsedEventHandler(this.tmrLoad_Elapsed);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -72,6 +81,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "数据监控界面";
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.tmrLoad)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -81,6 +91,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel MainPanel;
         private global::System.Windows.Forms.Button btnSystemConfig;
+        private System.Timers.Timer tmrLoad;
     }
 }
 

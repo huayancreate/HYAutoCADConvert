@@ -46,7 +46,7 @@ namespace AutoCadConvert.Bussiness
 
         public void Init()
         {
-            if (Util.GetInitTime() == null) Util.InitDateTime();
+            if (string.IsNullOrEmpty(Util.GetInitTime())) Util.InitDateTime();
             InitRules();
             InitProcess();
             InitThreadPool();

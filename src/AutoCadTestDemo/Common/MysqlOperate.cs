@@ -89,20 +89,23 @@ namespace Common
 
         public void InitDateTime()
         {
-            var strSql = "insert into config values('" + Guid.NewGuid() + "'," + DateTime.Now + ")";
+            var strSql = "insert into config values('" + Guid.NewGuid() + "','" + DateTime.Now + "')";
             MysqlDBUtil.ExecuteSql(strSql);
         }
 
-        public DateTime GetInitDateTime()
+        public string GetInitDateTime()
         {
             var strSql = "select inittime from config";
             DataSet ds = MysqlDBUtil.Query(strSql);
-            DateTime dateTime = new DateTime();
+
             if (ds.Tables.Count > 0)
             {
-                dateTime = Convert.ToDateTime(ds.Tables[0].Rows[0][0]);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds.Tables[0].Rows[0][0].ToString();
+                }
             }
-            return dateTime;
+            return null;
         }
     }
 }

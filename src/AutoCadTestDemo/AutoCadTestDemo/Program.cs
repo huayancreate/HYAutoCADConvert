@@ -13,12 +13,12 @@ namespace AutoCadConvert
         [STAThread]
         static void Main()
         {
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new MainForm());
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
             //Application.Run(new Form1());
-            Bussiness.Process p = new Bussiness.Process();
-            p.Init();
+            //Bussiness.Process p = new Bussiness.Process();
+            //p.Init();
         }
     }
 }

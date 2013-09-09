@@ -29,7 +29,13 @@ namespace MonitorForm
         private void LoadForm()
         {
             MainPanel.Controls.Clear();
-            MainPanel.Controls.Add(new MyTabPage());
+            MyTabPage tabPage = new MyTabPage();
+            MainPanel.Controls.Add(tabPage);
+        }
+
+        private void tmrLoad_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            LoadForm();
         }
     }
 }

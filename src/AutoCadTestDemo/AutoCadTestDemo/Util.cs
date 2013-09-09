@@ -120,7 +120,7 @@ namespace AutoCadConvert
                 AcadMText mtext = entity as AcadMText;
                 if (mtext != null)
                 {
-                    if (mtext.TextString.Contains("FAX") || mtext.TextString.Contains("TEL") || mtext.TextString.Contains("TOMITA"))
+                    if (mtext.TextString.Contains("FAX") || mtext.TextString.Contains("TEL") || mtext.TextString.Contains("CORPORATION"))
                     {
                         mtext.TextString = "";
                     }
@@ -383,7 +383,7 @@ namespace AutoCadConvert
             operate.InitDateTime();
         }
 
-        public static DateTime GetInitTime()
+        public static string GetInitTime()
         {
             return operate.GetInitDateTime();
         }
