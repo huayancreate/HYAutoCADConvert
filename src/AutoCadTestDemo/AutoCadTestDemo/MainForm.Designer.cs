@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnSelectPath = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -43,20 +44,24 @@
             this.panel4 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.txtSavePath = new System.Windows.Forms.TextBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.btnSelectPath);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.txtSelectPath);
-            this.panel1.Location = new System.Drawing.Point(12, 17);
+            this.panel1.Location = new System.Drawing.Point(6, 88);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(679, 76);
             this.panel1.TabIndex = 5;
@@ -82,12 +87,12 @@
             // 
             // txtSelectPath
             // 
+            this.txtSelectPath.Enabled = false;
             this.txtSelectPath.Location = new System.Drawing.Point(137, 15);
             this.txtSelectPath.Multiline = true;
             this.txtSelectPath.Name = "txtSelectPath";
             this.txtSelectPath.Size = new System.Drawing.Size(306, 33);
             this.txtSelectPath.TabIndex = 12;
-            this.txtSelectPath.Text = "C:\\Users\\wliu\\Desktop\\修改后的图纸";
             // 
             // panel2
             // 
@@ -95,7 +100,7 @@
             this.panel2.Controls.Add(this.label5);
             this.panel2.Controls.Add(this.btnImportExcel);
             this.panel2.Controls.Add(this.txtExcelPath);
-            this.panel2.Location = new System.Drawing.Point(12, 182);
+            this.panel2.Location = new System.Drawing.Point(6, 253);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(478, 78);
             this.panel2.TabIndex = 6;
@@ -121,12 +126,12 @@
             // 
             // txtExcelPath
             // 
+            this.txtExcelPath.Enabled = false;
             this.txtExcelPath.Location = new System.Drawing.Point(103, 19);
             this.txtExcelPath.Multiline = true;
             this.txtExcelPath.Name = "txtExcelPath";
             this.txtExcelPath.Size = new System.Drawing.Size(306, 33);
             this.txtExcelPath.TabIndex = 9;
-            this.txtExcelPath.Text = "C:\\Users\\wliu\\Desktop\\修改后的图纸";
             // 
             // btnSelectSave
             // 
@@ -152,7 +157,7 @@
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.btnUpdate);
-            this.panel3.Location = new System.Drawing.Point(506, 182);
+            this.panel3.Location = new System.Drawing.Point(500, 253);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(185, 78);
             this.panel3.TabIndex = 8;
@@ -160,7 +165,7 @@
             // lblTips
             // 
             this.lblTips.AutoSize = true;
-            this.lblTips.Location = new System.Drawing.Point(333, 17);
+            this.lblTips.Location = new System.Drawing.Point(327, 88);
             this.lblTips.Name = "lblTips";
             this.lblTips.Size = new System.Drawing.Size(0, 12);
             this.lblTips.TabIndex = 10;
@@ -169,10 +174,11 @@
             // 
             this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel4.Controls.Add(this.btnSelectSave);
             this.panel4.Controls.Add(this.label2);
             this.panel4.Controls.Add(this.txtSavePath);
-            this.panel4.Location = new System.Drawing.Point(12, 106);
+            this.panel4.Location = new System.Drawing.Point(6, 177);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(679, 70);
             this.panel4.TabIndex = 12;
@@ -188,27 +194,50 @@
             // 
             // txtSavePath
             // 
+            this.txtSavePath.Enabled = false;
             this.txtSavePath.Location = new System.Drawing.Point(99, 18);
             this.txtSavePath.Multiline = true;
             this.txtSavePath.Name = "txtSavePath";
             this.txtSavePath.Size = new System.Drawing.Size(306, 33);
             this.txtSavePath.TabIndex = 12;
-            this.txtSavePath.Text = "C:\\Users\\wliu\\Desktop\\修改后的图纸";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::AutoCadConvert.Properties.Resources.华研标志;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 1);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(164, 81);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 13;
+            this.pictureBox1.TabStop = false;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("宋体", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.Location = new System.Drawing.Point(237, 31);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(313, 30);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "图纸文件批量修改程序";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(697, 272);
+            this.ClientSize = new System.Drawing.Size(694, 336);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.lblTips);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "CAD文件批量修改";
+            this.Text = "图纸文件批量修改程序";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -217,6 +246,7 @@
             this.panel3.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -239,5 +269,7 @@
         private System.Windows.Forms.Button btnImportExcel;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtSavePath;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label3;
     }
 }

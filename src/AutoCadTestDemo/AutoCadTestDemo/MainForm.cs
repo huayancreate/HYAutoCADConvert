@@ -19,6 +19,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using Common;
 using System.Xml;
+using System.Configuration;
 
 namespace AutoCadConvert
 {
@@ -27,6 +28,7 @@ namespace AutoCadConvert
         public MainForm()
         {
             InitializeComponent();
+            LoadConfig();
         }
 
 
@@ -37,6 +39,21 @@ namespace AutoCadConvert
         /// <param name="e"></param>
         private void btnUpdate_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtSelectPath.Text))
+            {
+                MessageBox.Show("请选择待处理文件路径！");
+                return;
+            }
+            if (string.IsNullOrEmpty(txtSavePath.Text))
+            {
+                MessageBox.Show("请选保存文件路径！");
+                return;
+            }
+            if (string.IsNullOrEmpty(txtExcelPath.Text))
+            {
+                MessageBox.Show("请选择Excel文件路径！");
+                return;
+            }
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             Bussiness.Process p = new Bussiness.Process();
@@ -110,16 +127,17 @@ namespace AutoCadConvert
         /// <param name="e"></param>
         private void btnSelectPath_Click(object sender, EventArgs e)
         {
+
             FolderBrowserDialog saveFile = new FolderBrowserDialog();
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
-                txtSelectPath.Text = saveFile.SelectedPath;
+                txtSelectPath.Text = saveFile.SelectedPath + @"\";
                 SetAppSettings("filePath", txtSelectPath.Text.Trim());
             }
         }
 
         /// <summary>
-        /// 选择保存的文件路劲
+        /// 选择保存的文件路径
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -128,7 +146,7 @@ namespace AutoCadConvert
             FolderBrowserDialog saveFile = new FolderBrowserDialog();
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
-                txtSavePath.Text = saveFile.SelectedPath;
+                txtSavePath.Text = saveFile.SelectedPath + @"\";
                 SetAppSettings("savePath", txtSavePath.Text.Trim());
             }
         }
@@ -140,11 +158,30 @@ namespace AutoCadConvert
         /// <param name="e"></param>
         private void btnImportExcel_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog saveFile = new FolderBrowserDialog();
+            OpenFileDialog saveFile = new OpenFileDialog();
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
-                txtExcelPath.Text = saveFile.SelectedPath;
+                txtExcelPath.Text = saveFile.FileName;
                 SetAppSettings("xls", txtExcelPath.Text.Trim());
+            }
+        }
+
+        private void LoadConfig()
+        {
+            var xlsPath = ConfigurationManager.AppSettings["xls"].ToString();
+            if (!string.IsNullOrEmpty(xlsPath))
+            {
+                txtExcelPath.Text = xlsPath;
+            }
+            var savePath = ConfigurationManager.AppSettings["savePath"].ToString();
+            if (!string.IsNullOrEmpty(savePath))
+            {
+                txtSavePath.Text = savePath;
+            }
+            var filePath = ConfigurationManager.AppSettings["filePath"].ToString();
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                txtSelectPath.Text = filePath;
             }
         }
     }

@@ -10,6 +10,7 @@ namespace AutoCadConvert.Bussiness
     public class DefaultTask : AbstractTask
     {
         System.Timers.Timer aTimer;
+        private int bili = 1;
         public override void Run()
         {
             //1.获取要替换图号的规则
@@ -25,7 +26,7 @@ namespace AutoCadConvert.Bussiness
             }
             catch (Exception ex)
             {
-                dto.FileTips= "处理失败," + ex.Message;
+                dto.FileTips = "处理失败," + ex.Message;
                 dto.FilePath = dto.FilePath.Replace("\\", "\\\\");
                 dto.FileStatus = "1";
                 Util.UpdateHistory(dto);
@@ -37,18 +38,38 @@ namespace AutoCadConvert.Bussiness
             //TODO 相应方法
             this.KillFlag = true;
             AcadBlocks blocks = this.AcadDoc.Blocks;
-
-            //HistoryDto dto = Util.GetDrwingsDto(AcadDoc.Name);
+            double[] limit = this.AcadDoc.Limits;
+            double[] pagesize = new double[2];
+            pagesize[0] = Math.Abs(limit[2]) - Math.Abs(limit[0]);
+            pagesize[1] = Math.Abs(limit[3]) - Math.Abs(limit[1]);
+            var type = "";
+            var code = Util.SplitCode(this.AcadDoc.Name);
+            if (code.Length > 2)
+            {
+                type = "1";
+            }
+            else
+            {
+                type = "0";
+            }
             try
             {
                 foreach (AcadBlock block in blocks)
                 {
                     foreach (AcadEntity entity in block)
                     {
+                        bili = Util.CountBili(entity);
+                    }
+                }
+
+                foreach (AcadBlock block in blocks)
+                {
+                    foreach (AcadEntity entity in block)
+                    {
                         //2.替换审核者、设计者、日期等属性
-                        Util.ReplaceProperty(entity, blocks, this.GetDefaultRules());
+                        Util.ReplaceProperty(entity, blocks, limit, type, bili);
                         //3.替换装配图中的明细表中的编号
-                        Util.ReplaceDrawingCode(entity, AcAppComObj);
+                        //Util.ReplaceDrawingCode(entity, AcAppComObj);
                         entity.Update();
                     }
                 }

@@ -41,5 +41,13 @@ namespace Serach
 
             }
         }
+
+        private void EditPassForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.Visible = false;
+            this.Close();
+            MainFrom form = new MainFrom();
+            form.ShowDialog();
+        }
     }
 }

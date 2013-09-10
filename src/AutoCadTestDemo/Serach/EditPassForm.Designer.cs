@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditPassForm));
             this.txtOldPass = new System.Windows.Forms.TextBox();
             this.txtNewPass = new System.Windows.Forms.TextBox();
             this.txtAgainPass = new System.Windows.Forms.TextBox();
@@ -110,9 +111,11 @@
             this.Controls.Add(this.txtAgainPass);
             this.Controls.Add(this.txtNewPass);
             this.Controls.Add(this.txtOldPass);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditPassForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "修改密码";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditPassForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

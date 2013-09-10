@@ -25,6 +25,7 @@ namespace AutoCadConvert
         public static List<HistoryDto> drwings = new List<HistoryDto>();
         private static Random rand = new Random(99999999);
         private static MysqlOperate operate = new MysqlOperate();
+        private static int bili = 1;
 
         //private static string ReplaceStr(string oldCode)
         //{
@@ -67,13 +68,26 @@ namespace AutoCadConvert
         /// 替换审核者、设计者、日期等属性
         /// </summary>
         /// <param name="entity"></param>
-        public static void ReplaceProperty(AcadEntity entity, AcadBlocks blocks, Bussiness.Rules rules)
+        public static void ReplaceProperty(AcadEntity entity, AcadBlocks blocks, double[] limit, string type, int bili)
         {
             if (entity.ObjectName == "AcDbBlockReference")
             {
+                var dto = GetDrwingsDto(entity.Document.Name);
+                if (dto != null)
+                {
+                    if (!string.IsNullOrEmpty(dto.FileCode))
+                        newCode = dto.FileCode;
+                }
                 var s = ((AcadBlockReference)entity);
+                double[] point = s.InsertionPoint;
+                var startLimitX = Math.Abs(limit[0]);
+                var startLimitY = Math.Abs(limit[1]);
+                var endLimitX = Math.Abs(limit[2]);
+                var endLimitY = Math.Abs(limit[3]);
+                var blockX = Math.Abs(point[0]);
+                var blockY = Math.Abs(point[1]);
                 var name = blocks.Item(s.Name).Name;
-                blocks.Item(s.Name).Name = rand.Next().ToString();
+                blocks.Item(s.Name).Name = "ftjg" + Guid.NewGuid().ToString();
                 if (s.HasAttributes)
                 {
                     AcadAttributeReference bb;
@@ -87,42 +101,87 @@ namespace AutoCadConvert
                             {
                                 bb.TextString = "";
                             }
+                            if (type == "1" && bb.TagString == "----")
+                            {
+                                bb.TextString = "";
+                            }
                             if (bb.TagString == "---------")
                             {
                                 oldCode = bb.TextString;
-                                var dto = GetDrwingsDto(entity.Document.Name);
-                                if (dto != null)
-                                {
-                                    if (!string.IsNullOrEmpty(dto.FileCode)) bb.TextString = dto.FileCode;
-                                    newCode = dto.FileCode;
-                                }
-                                //oldCode = bb.TextString;
-                                //oldCode = ReplaceStr(oldCode);
-                                //var startCode = oldCode.Substring(0, RegexCode());
-                                //var endCode = oldCode.Substring(RegexCode(), oldCode.Length - RegexCode());
-                                //Hashtable hash = rules.GetRules();
-                                //foreach (DictionaryEntry de in hash)
-                                //{
-                                //    if (startCode == de.Key.ToString())
-                                //    {
-                                //        startCode = de.Value.ToString();
-                                //    }
-                                //}
-                                //newCode = startCode + "0" + Rand();
-                                //if (!string.IsNullOrEmpty(newCode)) bb.TextString = newCode;
+                                bb.TextString = dto.FileCode;
                             }
                         }
                     }
                 }
+                //}
             }
             else if (entity.ObjectName == "AcDbMText")
             {
                 AcadMText mtext = entity as AcadMText;
-                if (mtext != null)
+                var obj = mtext.InsertionPoint;
+                var startLimitX = limit[0];
+                var startLimitY = limit[1];
+                var endLimitX = limit[2];
+                var endLimitY = limit[3];
+
+                var rightStartLimitX = limit[0];
+                var rightStartLimitY = limit[1];
+                //TODO 计算右下角坐标点
+                if (startLimitX < endLimitX)
                 {
-                    if (mtext.TextString.Contains("FAX") || mtext.TextString.Contains("TEL") || mtext.TextString.Contains("CORPORATION"))
+                    rightStartLimitX = endLimitX;
+                }
+                if (startLimitY < endLimitY)
+                {
+                    rightStartLimitX = endLimitX;
+                }
+
+                //TODO 计算相对位置
+                var height = 0;
+                var width = 0;
+                var blockHeight = 0;
+                var blockWidth = 0;
+
+                if (type == "1")
+                {
+                    width = 268 * bili;
+                    height = 39 * bili;
+                    blockHeight = 23 * bili;
+                    blockWidth = 81 * bili;
+                }
+                else
+                {
+                    width = 253 * bili;
+                    height = 37 * bili;
+                    blockHeight = 20 * bili;
+                    blockWidth = 78 * bili;
+                }
+
+                var blockRightTopX = rightStartLimitX - width;
+                var blockRightTopY = rightStartLimitY + height;
+                var blockLeftBottomX = blockRightTopX + blockWidth + 3 * bili;
+                var blockLeftBottomY = blockRightTopY - blockHeight - 3 * bili;
+
+                //if (mtext.TextString == "123456789")
+                //{
+                //    Console.WriteLine("11111");
+                //}
+                if (obj[0] > blockRightTopX && obj[0] < blockLeftBottomX && obj[1] < blockRightTopY && obj[1] > blockLeftBottomY)
+                {
+                    mtext.TextString = "";
+                }
+                else
+                {
+                    if (obj[1] < rightStartLimitY)
                     {
                         mtext.TextString = "";
+                    }
+                    if (mtext != null)
+                    {
+                        if (mtext.TextString.Contains("FAX") || mtext.TextString.Contains("TEL") || mtext.TextString.Contains("CORPORATION"))
+                        {
+                            mtext.TextString = "";
+                        }
                     }
                 }
             }
@@ -226,10 +285,10 @@ namespace AutoCadConvert
         /// <returns></returns>
         public static void GetAllFiles(DirectoryInfo dir, Bussiness.Rules rules)
         {
-            var flag = 0;
+            var flag = 500;
             foreach (DirectoryInfo dirSub in dir.GetDirectories())
             {
-                flag = 0;
+                flag = 500;
                 foreach (FileInfo file in dirSub.GetFiles())
                 {
                     var extension = file.Extension;
@@ -297,7 +356,7 @@ namespace AutoCadConvert
         //        }
         //    }
         //    InsertHistory(listHis);
-        //    listHis.Clear();
+        //    listHis.iliClear();
         //}
 
         public static List<HistoryDto> RandomSortList(List<HistoryDto> listHis)
@@ -386,6 +445,20 @@ namespace AutoCadConvert
         public static string GetInitTime()
         {
             return operate.GetInitDateTime();
+        }
+
+        public static int CountBili(AcadEntity entity)
+        {
+            if (entity.ObjectName == "AcDbBlockReference")
+            {
+                var s = ((AcadBlockReference)entity);
+                if (s.Name.Contains("标题栏"))
+                {
+                    //Console.WriteLine("装配s.XScaleFactor" + s.XScaleFactor + "--" + entity.Document.Name + "\n");
+                    bili = int.Parse(s.XScaleFactor.ToString());
+                }
+            }
+            return bili;
         }
     }
 }

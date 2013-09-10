@@ -28,17 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnSystemConfig = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
             this.tmrLoad = new System.Timers.Timer();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tmrLoad)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Controls.Add(this.btnSystemConfig);
             this.panel1.Location = new System.Drawing.Point(1, 1);
             this.panel1.Name = "panel1";
@@ -47,7 +53,7 @@
             // 
             // btnSystemConfig
             // 
-            this.btnSystemConfig.Location = new System.Drawing.Point(11, 11);
+            this.btnSystemConfig.Location = new System.Drawing.Point(546, 10);
             this.btnSystemConfig.Name = "btnSystemConfig";
             this.btnSystemConfig.Size = new System.Drawing.Size(94, 32);
             this.btnSystemConfig.TabIndex = 0;
@@ -70,6 +76,26 @@
             this.tmrLoad.SynchronizingObject = this;
             this.tmrLoad.Elapsed += new System.Timers.ElapsedEventHandler(this.tmrLoad_Elapsed);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::MonitorForm.Properties.Resources.华研标志;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(115, 50);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Location = new System.Drawing.Point(145, 15);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(228, 27);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "图纸处理监控程序";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -77,11 +103,14 @@
             this.ClientSize = new System.Drawing.Size(654, 385);
             this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "数据监控界面";
+            this.Text = "图纸文件处理监控程序";
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tmrLoad)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -92,6 +121,8 @@
         private System.Windows.Forms.Panel MainPanel;
         private global::System.Windows.Forms.Button btnSystemConfig;
         private System.Timers.Timer tmrLoad;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

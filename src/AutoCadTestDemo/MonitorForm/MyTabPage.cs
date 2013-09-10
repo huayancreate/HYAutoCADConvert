@@ -152,10 +152,14 @@ namespace MonitorForm
             DateTime dt = operate.GetInitDateTime();
             DateTime dtNow = DateTime.Now;
             TimeSpan ts = dtNow - dt;
-            var temp = ts.TotalSeconds / processCount;
-            var finish = Convert.ToInt32((Count - processCount) * temp);
-            TimeSpan tsFinish = new TimeSpan(0, 0, finish);
-            return tsFinish.Hours.ToString() + "小时" + tsFinish.Minutes.ToString() + "分钟" + tsFinish.Seconds.ToString() + "秒";
+            if (processCount != 0)
+            {
+                var temp = ts.TotalSeconds / processCount;
+                var finish = Convert.ToInt32((Count - processCount) * temp);
+                TimeSpan tsFinish = new TimeSpan(0, 0, finish);
+                return tsFinish.Hours.ToString() + "小时" + tsFinish.Minutes.ToString() + "分钟" + tsFinish.Seconds.ToString() + "秒";
+            }
+            return "0小时0分钟0秒";
         }
     }
 }

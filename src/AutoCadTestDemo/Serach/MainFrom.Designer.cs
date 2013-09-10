@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrom));
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtOldCode = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -35,12 +36,14 @@
             this.lbNewCode = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnEditPass = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(385, 77);
+            this.btnSearch.Location = new System.Drawing.Point(385, 106);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(75, 23);
             this.btnSearch.TabIndex = 0;
@@ -50,7 +53,7 @@
             // 
             // txtOldCode
             // 
-            this.txtOldCode.Location = new System.Drawing.Point(175, 78);
+            this.txtOldCode.Location = new System.Drawing.Point(175, 107);
             this.txtOldCode.Name = "txtOldCode";
             this.txtOldCode.Size = new System.Drawing.Size(202, 21);
             this.txtOldCode.TabIndex = 1;
@@ -58,7 +61,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(68, 83);
+            this.label1.Location = new System.Drawing.Point(68, 112);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(101, 12);
             this.label1.TabIndex = 2;
@@ -67,7 +70,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(68, 126);
+            this.label2.Location = new System.Drawing.Point(68, 155);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 12);
             this.label2.TabIndex = 3;
@@ -77,7 +80,7 @@
             // 
             this.lbNewCode.FormattingEnabled = true;
             this.lbNewCode.ItemHeight = 12;
-            this.lbNewCode.Location = new System.Drawing.Point(175, 126);
+            this.lbNewCode.Location = new System.Drawing.Point(175, 155);
             this.lbNewCode.Name = "lbNewCode";
             this.lbNewCode.Size = new System.Drawing.Size(285, 88);
             this.lbNewCode.TabIndex = 4;
@@ -85,21 +88,32 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Controls.Add(this.btnEditPass);
             this.panel1.Location = new System.Drawing.Point(2, 1);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(541, 59);
+            this.panel1.Size = new System.Drawing.Size(541, 78);
             this.panel1.TabIndex = 5;
             // 
             // btnEditPass
             // 
-            this.btnEditPass.Location = new System.Drawing.Point(15, 11);
+            this.btnEditPass.Location = new System.Drawing.Point(440, 21);
             this.btnEditPass.Name = "btnEditPass";
             this.btnEditPass.Size = new System.Drawing.Size(90, 34);
             this.btnEditPass.TabIndex = 5;
             this.btnEditPass.Text = "修改密码";
             this.btnEditPass.UseVisualStyleBackColor = true;
             this.btnEditPass.Click += new System.EventHandler(this.btnEditPass_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Serach.Properties.Resources.华研标志;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(139, 70);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
             // 
             // MainFrom
             // 
@@ -112,10 +126,12 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtOldCode);
             this.Controls.Add(this.btnSearch);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainFrom";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "查询窗口";
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -130,5 +146,6 @@
         private System.Windows.Forms.ListBox lbNewCode;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnEditPass;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
             this.btnSet = new System.Windows.Forms.Button();
             this.txtServeIp = new System.Windows.Forms.TextBox();
             this.txtServePoint = new System.Windows.Forms.TextBox();
@@ -147,11 +148,13 @@
             this.Controls.Add(this.txtServePoint);
             this.Controls.Add(this.txtServeIp);
             this.Controls.Add(this.btnSet);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ConfigForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "服务器配置";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConfigForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

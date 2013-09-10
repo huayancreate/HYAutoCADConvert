@@ -54,5 +54,13 @@ namespace MonitorForm
             //}
             doc.Save(AppConfig());
         }
+
+        private void ConfigForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.Visible = false;
+            this.Close();
+            MainForm form = new MainForm();
+            form.ShowDialog();
+        }
     }
 }
