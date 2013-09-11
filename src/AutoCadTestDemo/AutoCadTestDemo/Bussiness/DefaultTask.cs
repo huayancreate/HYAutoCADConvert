@@ -28,7 +28,7 @@ namespace AutoCadConvert.Bussiness
             {
                 dto.FileTips = "处理失败," + ex.Message;
                 dto.FilePath = dto.FilePath.Replace("\\", "\\\\");
-                dto.FileStatus = "1";
+                dto.FileStatus = "2";
                 Util.UpdateHistory(dto);
                 Util.MoveFile(AbsPath, this.SavePath + "失败的图纸文件" + "\\" + this.TaskName);
                 //AcAppComObj.ActiveDocument.SaveAs(this.SavePath + "失败的图纸文件" + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
@@ -95,7 +95,7 @@ namespace AutoCadConvert.Bussiness
             {
                 dto.FileTips = "处理失败," + ex.Message;
                 dto.FilePath = dto.FilePath.Replace("\\", "\\\\");
-                dto.FileStatus = "1";
+                dto.FileStatus = "2";
                 Util.UpdateHistory(dto);
                 Util.MoveFile(AbsPath, this.SavePath + "失败的图纸文件" + "\\" + this.TaskName);
                 //AcAppComObj.ActiveDocument.SaveAs(this.SavePath + "失败的图纸文件" + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
