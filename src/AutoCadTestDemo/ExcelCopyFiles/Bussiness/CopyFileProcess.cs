@@ -2,6 +2,7 @@
 using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -52,7 +53,17 @@ namespace ExcelCopyFiles.Bussiness
 
         private string FindFilePathBySrcFileName(string sourceFileName)
         {
-            throw new NotImplementedException();
+            string[] list = Directory.GetFiles(sourceFilePath, sourceFileName, SearchOption.AllDirectories);
+            if(list.Length > 0)
+            {
+                foreach (string fileName in list)
+                {
+                    fileName.Contains(sourceFileName);
+                    FileInfo info = new FileInfo(fileName);
+                    return info.DirectoryName;
+                }
+            }
+            return null;
         }
 
 
