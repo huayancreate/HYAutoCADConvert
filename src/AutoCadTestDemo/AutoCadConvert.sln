@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serach", "Serach\Serach.csproj", "{A900E80C-B734-4602-BDAD-59567E7717BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelHandle", "ExcelHandle\ExcelHandle.csproj", "{69E06781-DBCE-43E1-923A-C571B77CDF2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelCopyFiles", "ExcelCopyFiles\ExcelCopyFiles.csproj", "{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,14 @@ Global
 		{A900E80C-B734-4602-BDAD-59567E7717BD}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{A900E80C-B734-4602-BDAD-59567E7717BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A900E80C-B734-4602-BDAD-59567E7717BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
