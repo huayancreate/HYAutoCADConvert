@@ -1,4 +1,4 @@
-﻿namespace MonitorForm
+﻿namespace Monitor
 {
     partial class MyTabPage
     {
@@ -36,6 +36,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "MyTabPage";
             this.Size = new System.Drawing.Size(652, 320);
+            this.Load += new System.EventHandler(this.MyTabPage_Load);
             this.ResumeLayout(false);
 
         }

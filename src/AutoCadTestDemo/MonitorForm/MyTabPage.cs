@@ -10,19 +10,17 @@ using System.Xml;
 using System.Collections;
 using Monitor;
 
-namespace MonitorForm
+namespace Monitor
 {
     public partial class MyTabPage : UserControl
     {
         public MyTabPage()
         {
             InitializeComponent();
-            LoadControl();
         }
 
-        public void LoadControl()
+        public void LoadControl(Hashtable hash)
         {
-            Hashtable hash = GetAppSettings();
             //tabControl1.TabPages.
             TabControl tabc = new TabControl();
             tabc.Size = new Size(652, 320);
@@ -109,30 +107,6 @@ namespace MonitorForm
             }
             this.Controls.Add(tabc);
         }
-        private Hashtable GetAppSettings()
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(AppConfig);
-            XmlNode node = doc.SelectSingleNode("/configuration/connectionStrings");
-            XmlElement ele = (XmlElement)node;
-            XmlNodeList elemList = ele.GetElementsByTagName("add");
-            Hashtable hash = new Hashtable();
-            foreach (XmlElement obj in elemList)
-            {
-                hash.Add(obj.GetAttribute("name"), obj.GetAttribute("connectionString"));
-            }
-            return hash;
-        }
-
-        public string AppConfig
-        {
-            get
-            {
-                int intPos = Application.StartupPath.Trim().IndexOf("bin") - 1;
-                string strDirectoryPath = System.IO.Path.Combine(Application.StartupPath.Substring(0, intPos), "App.config");
-                return strDirectoryPath;
-            }
-        }
 
         public MysqlOperate Operate(string connectionStr)
         {
@@ -160,6 +134,10 @@ namespace MonitorForm
                 return tsFinish.Hours.ToString() + "小时" + tsFinish.Minutes.ToString() + "分钟" + tsFinish.Seconds.ToString() + "秒";
             }
             return "0小时0分钟0秒";
+        }
+
+        private void MyTabPage_Load(object sender, EventArgs e)
+        {
         }
     }
 }

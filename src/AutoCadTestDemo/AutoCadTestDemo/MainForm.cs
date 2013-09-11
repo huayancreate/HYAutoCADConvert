@@ -118,6 +118,7 @@ namespace AutoCadConvert
                 node.AppendChild(xElem2);
             }
             doc.Save(Application.ExecutablePath + ".config");
+            LoadConfig();
         }
 
         /// <summary>
@@ -127,7 +128,6 @@ namespace AutoCadConvert
         /// <param name="e"></param>
         private void btnSelectPath_Click(object sender, EventArgs e)
         {
-
             FolderBrowserDialog saveFile = new FolderBrowserDialog();
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
@@ -168,17 +168,17 @@ namespace AutoCadConvert
 
         private void LoadConfig()
         {
-            var xlsPath = ConfigurationManager.AppSettings["xls"].ToString();
+            var xlsPath = Util.GetXmlValue("xls");//ConfigurationManager.AppSettings["xls"].ToString();
             if (!string.IsNullOrEmpty(xlsPath))
             {
                 txtExcelPath.Text = xlsPath;
             }
-            var savePath = ConfigurationManager.AppSettings["savePath"].ToString();
+            var savePath = Util.GetXmlValue("savePath");//ConfigurationManager.AppSettings["savePath"].ToString();
             if (!string.IsNullOrEmpty(savePath))
             {
                 txtSavePath.Text = savePath;
             }
-            var filePath = ConfigurationManager.AppSettings["filePath"].ToString();
+            var filePath = Util.GetXmlValue("filePath");//ConfigurationManager.AppSettings["filePath"].ToString();
             if (!string.IsNullOrEmpty(filePath))
             {
                 txtSelectPath.Text = filePath;

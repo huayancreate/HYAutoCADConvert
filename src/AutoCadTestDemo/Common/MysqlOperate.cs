@@ -70,7 +70,7 @@ namespace Common
         /// <returns></returns>
         public List<HistoryDto> Page(int currentPage, int pageSize)
         {
-            var strSql = "select * from history where filestatus='0' order by FileCode desc limit " + currentPage * pageSize + ", " + pageSize + "";
+            var strSql = "select * from history where filestatus='0' order by FileCode desc limit 0, " + pageSize + "";
             DataSet ds = MysqlDBUtil.Query(strSql);
             List<HistoryDto> _list = new List<HistoryDto>();
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)

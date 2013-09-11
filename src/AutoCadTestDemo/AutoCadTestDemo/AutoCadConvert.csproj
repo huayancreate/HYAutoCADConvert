@@ -32,6 +32,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>华研标志.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AutoCadConvert.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.AcadmAuto, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -137,6 +143,7 @@
   <ItemGroup>
     <Content Include="dll\MySql.Data.dll" />
     <Content Include="dll\NPOI.dll" />
+    <Content Include="华研标志.ico" />
     <None Include="Resources\华研标志.jpg" />
   </ItemGroup>
   <ItemGroup>

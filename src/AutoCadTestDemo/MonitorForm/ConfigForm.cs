@@ -9,7 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace MonitorForm
+namespace Monitor
 {
     public partial class ConfigForm : Form
     {
@@ -25,7 +25,7 @@ namespace MonitorForm
         /// <param name="e"></param>
         private void btnSet_Click(object sender, EventArgs e)
         {
-            SetAppSettings("123", "1231");
+            SetAppSettings(txtServe.Text, "Data Source=" + txtServeIp.Text + ";User ID=" + txtUserName.Text + ";Password=" + txtPassWord.Text + ";DataBase=autocad;Charset=gb2312");
         }
 
         public string AppConfig()

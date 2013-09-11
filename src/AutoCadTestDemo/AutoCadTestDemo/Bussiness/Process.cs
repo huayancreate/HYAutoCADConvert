@@ -57,7 +57,7 @@ namespace AutoCadConvert.Bussiness
         {
             this.Open();
             Thread.Sleep(10000);
-            string filePath = ConfigurationManager.AppSettings["filePath"].ToString();
+            string filePath = Util.GetXmlValue("filePath");//ConfigurationManager.AppSettings["filePath"].ToString();
             DirectoryInfo dir = new DirectoryInfo(filePath);
             Util.GetAllFiles(dir, rules);
         }
@@ -98,9 +98,10 @@ namespace AutoCadConvert.Bussiness
         {
             //TODO
             Rules rules = new Rules();
-            if (!File.Exists(ConfigurationManager.AppSettings["xls"].ToString()))
+            var xlsPath = Util.GetXmlValue("xls");
+            if (!File.Exists(xlsPath))
                 return null;
-            DataSet ds = Util.InitializeWorkbook(ConfigurationManager.AppSettings["xls"].ToString());
+            DataSet ds = Util.InitializeWorkbook(xlsPath);
             int count = ds.Tables[0].Rows.Count;
             for (int i = 1; i < count; i++)//从第二行开始读取数据
             {
@@ -120,7 +121,7 @@ namespace AutoCadConvert.Bussiness
                 task = TaskFactroy.CreateTaskByType(TaskType.DefaultTask);
                 task.AbsPath = drwings[i].FilePath;
                 task.AcAppComObj = this.acAppComObj;
-                task.SavePath = ConfigurationManager.AppSettings["savePath"].ToString();
+                task.SavePath = Util.GetXmlValue("savePath"); //ConfigurationManager.AppSettings["savePath"].ToString();
                 task.SetDefaultRules(rules);
                 task.TaskName = drwings[i].FileName;
                 task.Init();
@@ -130,7 +131,7 @@ namespace AutoCadConvert.Bussiness
         }
         private void CreateDir(string name)
         {
-            var path = ConfigurationManager.AppSettings["savePath"].ToString() + name;
+            var path = Util.GetXmlValue("savePath") + name;
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);

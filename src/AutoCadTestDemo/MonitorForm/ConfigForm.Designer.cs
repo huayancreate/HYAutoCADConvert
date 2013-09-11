@@ -1,4 +1,4 @@
-﻿namespace MonitorForm
+﻿namespace Monitor
 {
     partial class ConfigForm
     {

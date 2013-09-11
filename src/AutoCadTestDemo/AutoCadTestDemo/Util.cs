@@ -10,6 +10,8 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Common;
+using System.Xml;
+using System.Windows.Forms;
 
 
 namespace AutoCadConvert
@@ -25,7 +27,9 @@ namespace AutoCadConvert
         public static List<HistoryDto> drwings = new List<HistoryDto>();
         private static Random rand = new Random(99999999);
         private static MysqlOperate operate = new MysqlOperate();
-        private static int bili = 1;
+        private static double bili = 1.0;
+
+        private static int dirIndex = 0;
 
         //private static string ReplaceStr(string oldCode)
         //{
@@ -68,8 +72,66 @@ namespace AutoCadConvert
         /// 替换审核者、设计者、日期等属性
         /// </summary>
         /// <param name="entity"></param>
-        public static void ReplaceProperty(AcadEntity entity, AcadBlocks blocks, double[] limit, string type, int bili)
+        public static void ReplaceProperty(AcadEntity entity, AcadBlocks blocks, double[] limit, string type, double bili)
         {
+            var height = 0.0;
+            var width = 0.0;
+            var blockHeight = 0.0;
+            var blockWidth = 0.0;
+
+            if (type == "1")
+            {
+                width = 268 * bili;
+                height = 39 * bili;
+                blockHeight = 23 * bili;
+                blockWidth = 81 * bili;
+            }
+            else
+            {
+                width = 253 * bili;
+                height = 37 * bili;
+                blockHeight = 20 * bili;
+                blockWidth = 78 * bili;
+            }
+
+            var startLimitX = limit[0];
+            var startLimitY = limit[1];
+            var endLimitX = limit[2];
+            var endLimitY = limit[3];
+
+            var BottomRightLimitX = limit[0];
+            var BottomRightLimitY = limit[1];
+            var BottomLeftLimitX = limit[0];
+            var BottomLeftLimitY = limit[1];
+            var TittleLeftX = 0.0;
+            var TittleLeftY = 0.0;
+            var OutLeftX = 0.0;
+            var OutLeftY = 0.0;
+
+            //TODO 计算左下角坐标点
+            if (startLimitX > endLimitX)
+            {
+                BottomLeftLimitX = endLimitX;
+            }
+            if (startLimitY > endLimitY)
+            {
+                BottomLeftLimitY = endLimitY;
+            }
+            TittleLeftX = BottomLeftLimitX;
+            TittleLeftY = BottomLeftLimitY + height;
+            OutLeftX = BottomLeftLimitX;
+            OutLeftY = BottomLeftLimitY + 20 * bili;
+
+            //TODO 计算右下角坐标点
+            if (startLimitX < endLimitX)
+            {
+                BottomRightLimitX = endLimitX;
+            }
+            if (startLimitY > endLimitY)
+            {
+                BottomRightLimitY = endLimitY;
+            }
+
             if (entity.ObjectName == "AcDbBlockReference")
             {
                 var dto = GetDrwingsDto(entity.Document.Name);
@@ -80,101 +142,60 @@ namespace AutoCadConvert
                 }
                 var s = ((AcadBlockReference)entity);
                 double[] point = s.InsertionPoint;
-                var startLimitX = Math.Abs(limit[0]);
-                var startLimitY = Math.Abs(limit[1]);
-                var endLimitX = Math.Abs(limit[2]);
-                var endLimitY = Math.Abs(limit[3]);
-                var blockX = Math.Abs(point[0]);
-                var blockY = Math.Abs(point[1]);
-                var name = blocks.Item(s.Name).Name;
-                blocks.Item(s.Name).Name = "ftjg" + Guid.NewGuid().ToString();
-                if (s.HasAttributes)
+                if (point[0] > TittleLeftX && point[0] < BottomRightLimitX && point[1] < TittleLeftY && point[1] > BottomRightLimitY)
                 {
-                    AcadAttributeReference bb;
-                    object[] aa = (object[])s.GetAttributes();
-                    for (int i = 0; i < aa.Length; i++)
+                    if (s.HasAttributes)
                     {
-                        bb = aa[i] as AcadAttributeReference;
-                        if (bb != null)
+                        AcadAttributeReference bb;
+                        object[] aa = (object[])s.GetAttributes();
+                        for (int i = 0; i < aa.Length; i++)
                         {
-                            if (bb.TagString != "---------" && bb.TagString != "------" && !bb.TagString.Contains("GEN-TITLE-MAT") && !bb.TagString.Contains("GEN-TITLE-DES") && bb.TagString != "01" && !bb.TagString.Contains("GEN-TITLE-SCA{6.14,1}"))
+                            bb = aa[i] as AcadAttributeReference;
+                            if (bb != null)
                             {
-                                bb.TextString = "";
-                            }
-                            if (type == "1" && bb.TagString == "----")
-                            {
-                                bb.TextString = "";
-                            }
-                            if (bb.TagString == "---------")
-                            {
-                                oldCode = bb.TextString;
-                                bb.TextString = dto.FileCode;
+                                if (bb.TagString != "---------" && bb.TagString != "------" && !bb.TagString.Contains("GEN-TITLE-MAT") && !bb.TagString.Contains("GEN-TITLE-DES") && bb.TagString != "01" && !bb.TagString.Contains("GEN-TITLE-SCA{6.14,1}") && bb.TagString != "----" && bb.TagString != "-----")
+                                {
+                                    bb.TextString = "";
+                                }
+                                if (type == "1" && bb.TagString == "----")
+                                {
+                                    bb.TextString = "";
+                                }
+                                if (bb.TagString == "---------")
+                                {
+                                    oldCode = bb.TextString;
+                                    bb.TextString = dto.FileCode;
+                                }
                             }
                         }
                     }
                 }
+                var name = blocks.Item(s.Name).Name;
+                blocks.Item(s.Name).Name = "ftjg" + Guid.NewGuid().ToString();
                 //}
             }
             else if (entity.ObjectName == "AcDbMText")
             {
                 AcadMText mtext = entity as AcadMText;
                 var obj = mtext.InsertionPoint;
-                var startLimitX = limit[0];
-                var startLimitY = limit[1];
-                var endLimitX = limit[2];
-                var endLimitY = limit[3];
-
-                var rightStartLimitX = limit[0];
-                var rightStartLimitY = limit[1];
-                //TODO 计算右下角坐标点
-                if (startLimitX < endLimitX)
-                {
-                    rightStartLimitX = endLimitX;
-                }
-                if (startLimitY < endLimitY)
-                {
-                    rightStartLimitX = endLimitX;
-                }
-
                 //TODO 计算相对位置
-                var height = 0;
-                var width = 0;
-                var blockHeight = 0;
-                var blockWidth = 0;
+                var blockLeftTopX = BottomRightLimitX - width;
+                var blockLeftTopY = BottomRightLimitY + height;
+                var blockRightBottomX = blockLeftTopX + blockWidth + 5 * bili;
+                var blockRightBottomY = blockLeftTopY - blockHeight - 5 * bili;
 
-                if (type == "1")
-                {
-                    width = 268 * bili;
-                    height = 39 * bili;
-                    blockHeight = 23 * bili;
-                    blockWidth = 81 * bili;
-                }
-                else
-                {
-                    width = 253 * bili;
-                    height = 37 * bili;
-                    blockHeight = 20 * bili;
-                    blockWidth = 78 * bili;
-                }
-
-                var blockRightTopX = rightStartLimitX - width;
-                var blockRightTopY = rightStartLimitY + height;
-                var blockLeftBottomX = blockRightTopX + blockWidth + 3 * bili;
-                var blockLeftBottomY = blockRightTopY - blockHeight - 3 * bili;
-
-                //if (mtext.TextString == "123456789")
-                //{
-                //    Console.WriteLine("11111");
-                //}
-                if (obj[0] > blockRightTopX && obj[0] < blockLeftBottomX && obj[1] < blockRightTopY && obj[1] > blockLeftBottomY)
+                if (obj[0] > blockLeftTopX && obj[0] < blockRightBottomX && obj[1] < blockLeftTopY && obj[1] > blockRightBottomY)
                 {
                     mtext.TextString = "";
                 }
                 else
                 {
-                    if (obj[1] < rightStartLimitY)
+                    if (obj[1] < OutLeftY && obj[0] > TittleLeftX && obj[1] < BottomRightLimitX)
                     {
-                        mtext.TextString = "";
+                        if (!mtext.TextString.Contains("要求"))
+                        {
+                            mtext.TextString = "";
+                        }
                     }
                     if (mtext != null)
                     {
@@ -183,7 +204,12 @@ namespace AutoCadConvert
                             mtext.TextString = "";
                         }
                     }
+
                 }
+            }
+            if (entity.ObjectName != "AcmPartRef")
+            {
+                entity.Update();
             }
         }
 
@@ -285,79 +311,66 @@ namespace AutoCadConvert
         /// <returns></returns>
         public static void GetAllFiles(DirectoryInfo dir, Bussiness.Rules rules)
         {
-            var flag = 500;
-            foreach (DirectoryInfo dirSub in dir.GetDirectories())
+            foreach (DirectoryInfo _dir in dir.GetDirectories())
             {
-                flag = 500;
-                foreach (FileInfo file in dirSub.GetFiles())
+                var flag = 500;
+                List<string> list = new List<string>();
+                GetAllFiles(_dir, list);
+                for (int i = 0; i < list.Count; i++)
                 {
-                    var extension = file.Extension;
-                    if (extension.Equals(".dwg") || extension.Equals(".dwt") || extension.Equals(".dws") || extension.Equals(".dxf"))
+                    var fileName = Path.GetFileName(list[i].ToString());
+                    if (Util.GetDrwingsDto(fileName) == null)
                     {
-                        flag++;
-                        if (Util.GetDrwingsDto(file.Name) == null)
+                        HistoryDto dto = new HistoryDto();
+                        dto.Id = Guid.NewGuid().ToString();
+                        dto.FileName = fileName;
+                        dto.FilePath = list[i].Replace("\\", "\\\\");
+                        dto.FileTips = "未处理";
+                        dto.FileStatus = "0";//0：未处理，1：已处理
+                        var startCode = SplitCode(fileName);
+                        foreach (DictionaryEntry de in rules.GetRules())
                         {
-                            HistoryDto dto = new HistoryDto();
-                            dto.Id = Guid.NewGuid().ToString();
-                            dto.FileName = file.Name;
-                            dto.FilePath = file.FullName.Replace("\\", "\\\\");
-                            dto.FileTips = "未处理";
-                            dto.FileStatus = "0";//0：未处理，1：已处理
-                            var startCode = SplitCode(file.Name);
-                            foreach (DictionaryEntry de in rules.GetRules())
+                            if (startCode == de.Key.ToString())
                             {
-                                if (startCode == de.Key.ToString())
-                                {
-                                    startCode = de.Value.ToString();
-                                }
+                                startCode = de.Value.ToString();
                             }
-                            if (startCode.Length == 2)
-                            {
-                                dto.FileCode = startCode + string.Format("{0:D6}", flag);
-                            }
-                            else
-                            {
-                                dto.FileCode = startCode + string.Format("{0:D5}", flag);
-                            }
-                            listHis.Add(dto);
                         }
+                        if (startCode.Length == 2)
+                        {
+                            dto.FileCode = startCode + string.Format("{0:D6}", flag + i);
+                        }
+                        else
+                        {
+                            dto.FileCode = startCode + string.Format("{0:D5}", flag + i);
+                        }
+                        listHis.Add(dto);
                     }
                 }
-                GetAllFiles(dirSub, rules);
+                InsertHistory(listHis);
+                listHis.Clear();
             }
-            InsertHistory(listHis);
-            listHis.Clear();
         }
-        //public static void GetAllFiles(DirectoryInfo dir)
-        //{
-        //    List<HistoryDto> listHis = new List<HistoryDto>();
-        //    FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
-        //    foreach (FileSystemInfo info in fileinfo)
-        //    {
-        //        if (info is DirectoryInfo)
-        //        {
-        //            GetAllFiles((DirectoryInfo)info);
-        //        }
-        //        else
-        //        {
-        //            var extension = info.Extension;
-        //            if (extension.Equals(".dwg") || extension.Equals(".dwt") || extension.Equals(".dws") || extension.Equals(".dxf"))
-        //            {
-        //                if (Util.GetDrwingsDto(info.Name) == null)
-        //                {
-        //                    HistoryDto dto = new HistoryDto();
-        //                    dto.Id = Guid.NewGuid().ToString();
-        //                    dto.FileName = info.Name;
-        //                    dto.FilePath = info.FullName.Replace("\\", "\\\\");
-        //                    dto.FileStatus = "未处理";
-        //                    listHis.Add(dto);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    InsertHistory(listHis);
-        //    listHis.iliClear();
-        //}
+
+        public static List<string> GetAllFiles(DirectoryInfo dir, List<string> list)
+        {
+            FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
+            foreach (FileSystemInfo info in fileinfo)
+            {
+                if (info is DirectoryInfo)
+                {
+                    GetAllFiles((DirectoryInfo)info, list);
+                }
+                else
+                {
+                    var extension = info.Extension;
+                    if (extension.Equals(".dwg") || extension.Equals(".dwt") || extension.Equals(".dws") || extension.Equals(".dxf"))
+                    {
+                        list.Add(info.FullName);
+                    }
+                }
+            }
+            return list;
+        }
 
         public static List<HistoryDto> RandomSortList(List<HistoryDto> listHis)
         {
@@ -447,7 +460,7 @@ namespace AutoCadConvert
             return operate.GetInitDateTime();
         }
 
-        public static int CountBili(AcadEntity entity)
+        public static double CountBili(AcadEntity entity)
         {
             if (entity.ObjectName == "AcDbBlockReference")
             {
@@ -455,10 +468,23 @@ namespace AutoCadConvert
                 if (s.Name.Contains("标题栏"))
                 {
                     //Console.WriteLine("装配s.XScaleFactor" + s.XScaleFactor + "--" + entity.Document.Name + "\n");
-                    bili = int.Parse(s.XScaleFactor.ToString());
+                    bili = Convert.ToDouble(s.XScaleFactor.ToString());
                 }
             }
             return bili;
+        }
+
+        public static string GetXmlValue(string AppKey)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Application.ExecutablePath + ".config");
+            XmlNode node = doc.SelectSingleNode(@"//add[@key='" + AppKey + "']");
+            XmlElement ele = (XmlElement)node;
+            if (node != null)
+            {
+                return ele.GetAttribute("value");
+            }
+            return null;
         }
     }
 }
