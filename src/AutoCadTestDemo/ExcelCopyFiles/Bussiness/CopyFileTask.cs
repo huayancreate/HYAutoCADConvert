@@ -8,29 +8,32 @@ namespace ExcelCopyFiles.Bussiness
 {
     public class CopyFileTask
     {
-        public CopyFileTask(string sourceFileFullPath, string targetFileFullPath, string fileName)
-        {
-            this.sourceFileFullPath = sourceFileFullPath;
-            this.targetFileFullPath = targetFileFullPath;
-            this.fileName = fileName;
-
-        }
-
         private string sourceFileFullPath = null;
         private string targetFileFullPath = null;
         private string fileName = null;
+        private string tempTargetFilePath = null;
+
+        public CopyFileTask(string sourceFullName, string targetFilePath, string fileName, string tempTargetFilePath)
+        {
+            // TODO: Complete member initialization
+            this.sourceFileFullPath = sourceFullName;
+            this.targetFileFullPath = targetFilePath;
+            this.fileName = fileName;
+            this.tempTargetFilePath = tempTargetFilePath;
+        }
+
+
 
         public  bool Move()
         {
             if (sourceFileFullPath == null || targetFileFullPath == null || fileName == null)
                 return false;
-            string sourceFile = Path.Combine(sourceFileFullPath, fileName);
-            string destFile = Path.Combine(targetFileFullPath, fileName);
-            if (!Directory.Exists(targetFileFullPath))
+            string destFile = targetFileFullPath +  fileName;
+            if (!Directory.Exists(tempTargetFilePath))
             {
-                Directory.CreateDirectory(targetFileFullPath);
+                Directory.CreateDirectory(tempTargetFilePath);
             }
-            File.Copy(sourceFile, destFile, true);
+            File.Copy(sourceFileFullPath, destFile, true);
             return true;
         }
     }

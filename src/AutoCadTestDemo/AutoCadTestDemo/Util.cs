@@ -18,7 +18,7 @@ namespace AutoCadConvert
 {
     public abstract class Util
     {
-        private static HSSFWorkbook hssfworkbook;
+        private static IWorkbook hssfworkbook;
         private static DataSet ds = new DataSet();
         public static string oldCode = "";
         public static string newCode = "";
@@ -161,6 +161,22 @@ namespace AutoCadConvert
                                 {
                                     bb.TextString = "";
                                 }
+                                if (type == "0" && bb.TagString == "-----")
+                                {
+                                    bb.TextString = "";
+                                }
+                                if (type == "0" && bb.TagString == "-")
+                                {
+                                    bb.TextString = "";
+                                }
+                                if (type == "0" && bb.TagString == "--")
+                                {
+                                    bb.TextString = "";
+                                }
+                                if (type == "0" && bb.TagString == "---")
+                                {
+                                    bb.TextString = "";
+                                }
                                 if (bb.TagString == "---------")
                                 {
                                     oldCode = bb.TextString;
@@ -196,6 +212,10 @@ namespace AutoCadConvert
                         {
                             mtext.TextString = "";
                         }
+                    }
+                    if (obj[1] < BottomRightLimitY)
+                    {
+                        mtext.TextString = "";
                     }
                     if (mtext != null)
                     {
@@ -240,7 +260,7 @@ namespace AutoCadConvert
         {
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                hssfworkbook = new HSSFWorkbook(file);
+                hssfworkbook = WorkbookFactory.Create(file);
                 return ConvertToDataTable();
             }
         }
@@ -485,6 +505,11 @@ namespace AutoCadConvert
                 return ele.GetAttribute("value");
             }
             return null;
+        }
+
+        public static void UpdateConfg()
+        {
+            operate.UpdateConfig();
         }
     }
 }

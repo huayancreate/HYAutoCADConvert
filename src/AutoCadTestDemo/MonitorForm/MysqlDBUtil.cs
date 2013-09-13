@@ -757,5 +757,24 @@ namespace Monitor
                 throw new Exception("转换出错出错!", ex);
             }
         }
+
+        /// <summary>
+        /// 检查数据库连接是否可以连接
+        /// </summary>
+        /// <returns></returns>
+        public bool OpenConnection()
+        {
+            MySqlConnection connection;
+            try
+            {
+                connection = new MySqlConnection(connectionString);
+                connection.Open();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

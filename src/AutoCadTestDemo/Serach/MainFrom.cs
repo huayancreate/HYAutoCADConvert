@@ -20,8 +20,21 @@ namespace Serach
         private void btnSearch_Click(object sender, EventArgs e)
         {
             MysqlOperate operate = new MysqlOperate();
-            lbNewCode.DataSource = operate.GetCodeDto(txtOldCode.Text);
-            lbNewCode.DisplayMember = "NewCode";
+            DataTable dt = operate.GetCodeDto(txtOldCode.Text);
+            lbNewCode.DataSource = dt;
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                if (dt.Rows[i]["NewCode"].ToString().Contains(txtOldCode.Text))
+                {
+                    lbNewCode.DisplayMember = "OldCode";
+                    break;
+                }
+                else
+                {
+                    lbNewCode.DisplayMember = "NewCode";
+                }
+            }
+
         }
 
         private void btnEditPass_Click(object sender, EventArgs e)

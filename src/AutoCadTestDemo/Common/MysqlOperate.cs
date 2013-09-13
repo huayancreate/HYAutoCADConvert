@@ -93,6 +93,12 @@ namespace Common
             MysqlDBUtil.ExecuteSql(strSql);
         }
 
+        public void UpdateConfig()
+        {
+            var strSql = "update config set initTime='" + DateTime.Now + "'";
+            MysqlDBUtil.ExecuteSql(strSql);
+        }
+
         public string GetInitDateTime()
         {
             var strSql = "select inittime from config";

@@ -13,9 +13,17 @@ namespace Monitor
 {
     public partial class ConfigForm : Form
     {
+        private MainForm mainForm;
+
         public ConfigForm()
         {
             InitializeComponent();
+        }
+
+        public ConfigForm(MainForm mainForm)
+        {
+            InitializeComponent();
+            this.mainForm = mainForm;
         }
 
         /// <summary>
@@ -25,42 +33,36 @@ namespace Monitor
         /// <param name="e"></param>
         private void btnSet_Click(object sender, EventArgs e)
         {
-            SetAppSettings(txtServe.Text, "Data Source=" + txtServeIp.Text + ";User ID=" + txtUserName.Text + ";Password=" + txtPassWord.Text + ";DataBase=autocad;Charset=gb2312");
+            this.SetAppSettings(this.txtServe.Text, "Data Source=" + this.txtServeIp.Text + ";User ID=" + this.txtUserName.Text + ";Password=" + this.txtPassWord.Text + ";DataBase=autocad;Charset=gb2312");
+            this.Visible = false;
+            this.Close();
+            this.mainForm.LoadForm();
         }
-
-        public string AppConfig()
-        {
-            int intPos = Application.StartupPath.Trim().IndexOf("bin") - 1;
-            string strDirectoryPath = System.IO.Path.Combine(Application.StartupPath.Substring(0, intPos), "App.config");
-            return strDirectoryPath;
-        }
-
         public void SetAppSettings(string AppKey, string AppValue)
         {
             //System.Configuration.ConfigurationSettings.AppSettings.Set(AppKey,AppValue);
             XmlDocument doc = new XmlDocument();
-            doc.Load(AppConfig());
+            //doc.Load(Application.ExecutablePath + ".config");
+            var configPath = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+            doc.Load(configPath);
             XmlNode node = doc.SelectSingleNode("/configuration/connectionStrings");
             XmlElement ele = (XmlElement)node;
-            //if (node != null)
-            //    ele.SetAttribute("value", AppValue);
-            //else
-            //{
+            XmlNodeList elemList = ele.GetElementsByTagName("add");
+            foreach (XmlElement obj in elemList)
+            {
+                if (obj.GetAttribute("name") == AppKey)
+                {
+                    MessageBox.Show("当前系统检测到配置文件中存在服务器名称为：" + AppKey + "，请重新输入新的服务器名称！");
+                    return;
+                }
+            }
             XmlElement xElem2;
             xElem2 = doc.CreateElement("add");
             xElem2.SetAttribute("name", AppKey);
             xElem2.SetAttribute("connectionString", AppValue);
             node.AppendChild(xElem2);
-            //}
-            doc.Save(AppConfig());
-        }
-
-        private void ConfigForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            this.Visible = false;
-            this.Close();
-            MainForm form = new MainForm();
-            form.ShowDialog();
+            doc.Save(Application.ExecutablePath + ".config");
+            doc.Load(Application.ExecutablePath + ".config");
         }
     }
 }

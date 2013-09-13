@@ -31,10 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
             this.btnSet = new System.Windows.Forms.Button();
             this.txtServeIp = new System.Windows.Forms.TextBox();
-            this.txtServePoint = new System.Windows.Forms.TextBox();
             this.txtUserName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtPassWord = new System.Windows.Forms.TextBox();
@@ -44,7 +42,7 @@
             // 
             // btnSet
             // 
-            this.btnSet.Location = new System.Drawing.Point(151, 169);
+            this.btnSet.Location = new System.Drawing.Point(151, 141);
             this.btnSet.Name = "btnSet";
             this.btnSet.Size = new System.Drawing.Size(104, 37);
             this.btnSet.TabIndex = 6;
@@ -59,16 +57,9 @@
             this.txtServeIp.Size = new System.Drawing.Size(172, 21);
             this.txtServeIp.TabIndex = 2;
             // 
-            // txtServePoint
-            // 
-            this.txtServePoint.Location = new System.Drawing.Point(151, 75);
-            this.txtServePoint.Name = "txtServePoint";
-            this.txtServePoint.Size = new System.Drawing.Size(172, 21);
-            this.txtServePoint.TabIndex = 3;
-            // 
             // txtUserName
             // 
-            this.txtUserName.Location = new System.Drawing.Point(151, 103);
+            this.txtUserName.Location = new System.Drawing.Point(151, 75);
             this.txtUserName.Name = "txtUserName";
             this.txtUserName.Size = new System.Drawing.Size(172, 21);
             this.txtUserName.TabIndex = 4;
@@ -82,19 +73,10 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "服务器地址：";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(61, 80);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 12);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "端口：";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(61, 109);
+            this.label3.Location = new System.Drawing.Point(61, 81);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 12);
             this.label3.TabIndex = 6;
@@ -103,7 +85,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(61, 137);
+            this.label4.Location = new System.Drawing.Point(61, 109);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(41, 12);
             this.label4.TabIndex = 8;
@@ -111,7 +93,7 @@
             // 
             // txtPassWord
             // 
-            this.txtPassWord.Location = new System.Drawing.Point(151, 131);
+            this.txtPassWord.Location = new System.Drawing.Point(151, 103);
             this.txtPassWord.Name = "txtPassWord";
             this.txtPassWord.Size = new System.Drawing.Size(172, 21);
             this.txtPassWord.TabIndex = 5;
@@ -136,16 +118,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(393, 218);
+            this.ClientSize = new System.Drawing.Size(393, 192);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtServe);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtPassWord);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtUserName);
-            this.Controls.Add(this.txtServePoint);
             this.Controls.Add(this.txtServeIp);
             this.Controls.Add(this.btnSet);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -154,7 +134,6 @@
             this.Name = "ConfigForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "服务器配置";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConfigForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -164,10 +143,8 @@
 
         private System.Windows.Forms.Button btnSet;
         private System.Windows.Forms.TextBox txtServeIp;
-        private System.Windows.Forms.TextBox txtServePoint;
         private System.Windows.Forms.TextBox txtUserName;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtPassWord;

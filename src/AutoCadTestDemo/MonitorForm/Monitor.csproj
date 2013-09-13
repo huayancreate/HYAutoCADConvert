@@ -59,6 +59,7 @@
     <Reference Include="MySql.Data, Version=5.1.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\AutoCadTestDemo\dll\MySql.Data.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -75,20 +76,26 @@
   <ItemGroup>
     <Compile Include="CodeDto.cs" />
     <Compile Include="HistoryDto.cs" />
+    <Compile Include="LoadForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadForm.Designer.cs">
+      <DependentUpon>LoadForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MysqlDBUtil.cs" />
-    <Compile Include="MysqlOperate.cs" />
-    <Compile Include="MyTabPage.cs">
+    <Compile Include="MyGroupBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MyTabPage.Designer.cs">
-      <DependentUpon>MyTabPage.cs</DependentUpon>
+    <Compile Include="MyGroupBox.Designer.cs">
+      <DependentUpon>MyGroupBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="MysqlDBUtil.cs" />
+    <Compile Include="MysqlOperate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigForm.cs">
@@ -98,12 +105,15 @@
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <EmbeddedResource Include="LoadForm.resx">
+      <DependentUpon>LoadForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="MyTabPage.resx">
-      <DependentUpon>MyTabPage.cs</DependentUpon>
+    <EmbeddedResource Include="MyGroupBox.resx">
+      <DependentUpon>MyGroupBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

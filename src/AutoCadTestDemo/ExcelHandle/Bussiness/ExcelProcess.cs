@@ -6,12 +6,20 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ExcelHandle.Bussiness
 {
     public class ExcelProcess
     {
-        private HSSFWorkbook workbook;
+        private IWorkbook workbook;
+
+        public IWorkbook Workbook
+        {
+            get { return workbook; }
+            set { workbook = value; }
+        }
+
         private string targetfileName;
 
         public string TargetfileName
@@ -26,13 +34,6 @@ namespace ExcelHandle.Bussiness
             get { return targetFilePath; }
             set { targetFilePath = value; }
         }
-
-        public HSSFWorkbook Workbook
-        {
-            get { return workbook; }
-            set { workbook = value; }
-        }
-
         public void Run()
         {
             ISheet sheet = workbook.GetSheetAt(0);
@@ -52,18 +53,14 @@ namespace ExcelHandle.Bussiness
                 }
             }
 
-            WorkbokkSave(sheet);
+            WorkbokkSave();
         }
 
-        private void WorkbokkSave(ISheet sheet)
+        private void WorkbokkSave()
         {
-            HSSFWorkbook wk = new HSSFWorkbook();
-            ISheet destSheet = wk.CreateSheet();
-            destSheet = sheet;
-            using (FileStream fs = File.OpenWrite(targetFilePath + targetfileName))
-            {
-                wk.Write(fs); 
-            }
+            FileStream fs = File.OpenWrite(targetFilePath + targetfileName);
+            Workbook.Write(fs);
+            fs.Close();
         }
 
         private void Replace(ICell cell)
@@ -94,7 +91,26 @@ namespace ExcelHandle.Bussiness
             return "";
         }
 
-
+        public static List<string> GetAllFiles(DirectoryInfo dir, List<string> list)
+        {
+            FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
+            foreach (FileSystemInfo info in fileinfo)
+            {
+                if (info is DirectoryInfo)
+                {
+                    GetAllFiles((DirectoryInfo)info, list);
+                }
+                else
+                {
+                    var extension = info.Extension;
+                    if (extension.Equals(".xls") || extension.Equals(".xlsx"))
+                    {
+                        list.Add(info.FullName);
+                    }
+                }
+            }
+            return list;
+        }
 
     }
 }

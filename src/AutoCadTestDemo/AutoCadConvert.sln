@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCadConvert", "AutoCadTestDemo\AutoCadConvert.csproj", "{E84D2C14-7938-485A-A602-21F5668169AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor", "MonitorForm\Monitor.csproj", "{DB2DA207-3BB5-42EB-8BE4-F6F75C5178DA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{D65B6F35-B4D2-41EB-BD2F-4DDEEDA365D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serach", "Serach\Serach.csproj", "{A900E80C-B734-4602-BDAD-59567E7717BD}"
@@ -12,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelHandle", "ExcelHandle\ExcelHandle.csproj", "{69E06781-DBCE-43E1-923A-C571B77CDF2A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelCopyFiles", "ExcelCopyFiles\ExcelCopyFiles.csproj", "{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainTools", "MainTools\MainTools.csproj", "{06C36EC1-0095-4AC7-907D-FC8C11C73B37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{E84D2C14-7938-485A-A602-21F5668169AD}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{E84D2C14-7938-485A-A602-21F5668169AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E84D2C14-7938-485A-A602-21F5668169AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DB2DA207-3BB5-42EB-8BE4-F6F75C5178DA}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{DB2DA207-3BB5-42EB-8BE4-F6F75C5178DA}.Debug|Any CPU.Build.0 = Release|Any CPU
-		{DB2DA207-3BB5-42EB-8BE4-F6F75C5178DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB2DA207-3BB5-42EB-8BE4-F6F75C5178DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D65B6F35-B4D2-41EB-BD2F-4DDEEDA365D6}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{D65B6F35-B4D2-41EB-BD2F-4DDEEDA365D6}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{D65B6F35-B4D2-41EB-BD2F-4DDEEDA365D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,14 +31,18 @@ Global
 		{A900E80C-B734-4602-BDAD-59567E7717BD}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{A900E80C-B734-4602-BDAD-59567E7717BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A900E80C-B734-4602-BDAD-59567E7717BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69E06781-DBCE-43E1-923A-C571B77CDF2A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDF3B05D-73B6-440E-AA83-ADE2A4BC883D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06C36EC1-0095-4AC7-907D-FC8C11C73B37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06C36EC1-0095-4AC7-907D-FC8C11C73B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06C36EC1-0095-4AC7-907D-FC8C11C73B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06C36EC1-0095-4AC7-907D-FC8C11C73B37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

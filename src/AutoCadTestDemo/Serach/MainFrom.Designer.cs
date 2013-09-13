@@ -35,8 +35,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.lbNewCode = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnEditPass = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnEditPass = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -63,9 +63,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(68, 112);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 12);
+            this.label1.Size = new System.Drawing.Size(77, 12);
             this.label1.TabIndex = 2;
-            this.label1.Text = "请输入旧的图号：";
+            this.label1.Text = "请输入图号：";
             // 
             // label2
             // 
@@ -74,7 +74,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 12);
             this.label2.TabIndex = 3;
-            this.label2.Text = "新的图号为：";
+            this.label2.Text = "图号结果为：";
             // 
             // lbNewCode
             // 
@@ -95,16 +95,6 @@
             this.panel1.Size = new System.Drawing.Size(541, 78);
             this.panel1.TabIndex = 5;
             // 
-            // btnEditPass
-            // 
-            this.btnEditPass.Location = new System.Drawing.Point(440, 21);
-            this.btnEditPass.Name = "btnEditPass";
-            this.btnEditPass.Size = new System.Drawing.Size(90, 34);
-            this.btnEditPass.TabIndex = 5;
-            this.btnEditPass.Text = "修改密码";
-            this.btnEditPass.UseVisualStyleBackColor = true;
-            this.btnEditPass.Click += new System.EventHandler(this.btnEditPass_Click);
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::Serach.Properties.Resources.华研标志;
@@ -114,6 +104,16 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
+            // 
+            // btnEditPass
+            // 
+            this.btnEditPass.Location = new System.Drawing.Point(440, 21);
+            this.btnEditPass.Name = "btnEditPass";
+            this.btnEditPass.Size = new System.Drawing.Size(90, 34);
+            this.btnEditPass.TabIndex = 5;
+            this.btnEditPass.Text = "修改密码";
+            this.btnEditPass.UseVisualStyleBackColor = true;
+            this.btnEditPass.Click += new System.EventHandler(this.btnEditPass_Click);
             // 
             // MainFrom
             // 

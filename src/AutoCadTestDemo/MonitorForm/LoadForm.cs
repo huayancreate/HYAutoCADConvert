@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace UpdateCode
+namespace Monitor
 {
-    public partial class Form1 : Form
+    public partial class LoadForm : Form
     {
-        public Form1()
+        public LoadForm()
         {
             InitializeComponent();
         }

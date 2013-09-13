@@ -64,6 +64,7 @@ namespace AutoCadConvert
             double minutes = timespan.TotalMinutes;  // 总分钟
             double seconds = timespan.TotalSeconds;  //  总秒数
             double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数
+            Util.UpdateConfg();
             MessageBox.Show("图纸修改完成，修改所花时间为：" + seconds.ToString());
             //UpdateCAD();
         }

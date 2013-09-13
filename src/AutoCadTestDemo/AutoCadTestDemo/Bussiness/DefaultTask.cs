@@ -85,7 +85,8 @@ namespace AutoCadConvert.Bussiness
                 var fileName = Util.SplitCode(Util.newCode);
                 if (AcAppComObj.ActiveDocument.Saved == false)
                 {
-                    AcAppComObj.ActiveDocument.SaveAs(this.SavePath + fileName + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
+                    //AcAppComObj.ActiveDocument.SaveAs(this.SavePath + fileName + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
+                    AcAppComObj.ActiveDocument.SaveAs(this.SavePath + "123456789" + "\\" + Util.newCode, AcSaveAsType.ac2013_dwg, null);
                     this.AcadDoc.Close();
                     GC.Collect();
 

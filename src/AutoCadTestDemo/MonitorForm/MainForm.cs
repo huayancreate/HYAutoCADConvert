@@ -16,42 +16,42 @@ namespace Monitor
         public MainForm()
         {
             InitializeComponent();
+            ConfigSettings();
             LoadForm();
+
         }
 
         private void btnSystemConfig_Click(object sender, EventArgs e)
         {
-            ConfigForm form = new ConfigForm();
-            if (form.ShowDialog() == DialogResult.OK)
+            if (new ConfigForm(this).ShowDialog() != DialogResult.OK)
             {
-                LoadForm();
+                return;
             }
+            //this.LoadForm();
         }
 
-        private void LoadForm()
+        public void LoadForm()
         {
-            tabControl1.TabPages.Clear();
+            this.MainPanel.Controls.Clear();
             Hashtable hash = GetAppSettings();
             LoadControl(hash);
-            //MyTabPage tabPage = new MyTabPage();
-            //tabPage.LoadControl(hash);
-            //MainPanel.Controls.Add(tabPage);
         }
 
         private void tmrLoad_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             LoadForm();
+            //this.Refresh();
         }
-
 
         private Hashtable GetAppSettings()
         {
+            Hashtable hash = new Hashtable();
+            hash.Clear();
             XmlDocument doc = new XmlDocument();
             doc.Load(Application.ExecutablePath + ".config");
             XmlNode node = doc.SelectSingleNode("/configuration/connectionStrings");
             XmlElement ele = (XmlElement)node;
             XmlNodeList elemList = ele.GetElementsByTagName("add");
-            Hashtable hash = new Hashtable();
             foreach (XmlElement obj in elemList)
             {
                 hash.Add(obj.GetAttribute("name"), obj.GetAttribute("connectionString"));
@@ -61,89 +61,28 @@ namespace Monitor
 
         public void LoadControl(Hashtable hash)
         {
-            ////tabControl1.TabPages.
-            ////TabControl tabc = new TabControl();
-            ////tabc.Size = new Size(652, 320);
-            //foreach (DictionaryEntry de in hash)
-            //{
-            //    var dbUtil = Operate(de.Value.ToString());
-            //    TabPage tabpage = new TabPage();
-            //    tabpage.Name = de.Key.ToString();
-            //    tabpage.Text = de.Key.ToString();
-            //    Label label1 = new Label();
-            //    label1.AutoSize = true;
-            //    label1.Location = new System.Drawing.Point(23, 36);
-            //    label1.Name = "label1";
-            //    label1.Size = new System.Drawing.Size(113, 12);
-            //    label1.TabIndex = 0;
-            //    label1.Text = "当前共需处理图纸：";
-
-            //    Label label2 = new Label();
-            //    label2.AutoSize = true;
-            //    label2.Location = new System.Drawing.Point(142, 36);
-            //    label2.Name = "label2";
-            //    label2.Size = new System.Drawing.Size(41, 12);
-            //    label2.TabIndex = 1;
-            //    label2.Text = dbUtil.DrwingsCount("").ToString();
-
-            //    Label label3 = new Label();
-            //    label3.AutoSize = true;
-            //    label3.Location = new System.Drawing.Point(394, 36);
-            //    label3.Name = "label3";
-            //    label3.Size = new System.Drawing.Size(41, 12);
-            //    label3.TabIndex = 3;
-            //    label3.Text = dbUtil.DrwingsCount("1").ToString();
-
-            //    Label label4 = new Label();
-            //    label4.AutoSize = true;
-            //    label4.Location = new System.Drawing.Point(311, 36);
-            //    label4.Name = "label4";
-            //    label4.Size = new System.Drawing.Size(77, 12);
-            //    label4.TabIndex = 2;
-            //    label4.Text = "已处理图纸：";
-
-            //    Label label5 = new Label();
-            //    label5.AutoSize = true;
-            //    label5.Location = new System.Drawing.Point(106, 85);
-            //    label5.Name = "label5";
-            //    label5.Size = new System.Drawing.Size(41, 12);
-            //    label5.TabIndex = 5;
-            //    label5.Text = GetRemainTime(dbUtil);
-
-            //    Label label6 = new Label();
-            //    label6.AutoSize = true;
-            //    label6.Location = new System.Drawing.Point(23, 85);
-            //    label6.Name = "label6";
-            //    label6.Size = new System.Drawing.Size(77, 12);
-            //    label6.TabIndex = 4;
-            //    label6.Text = "已处理时间：";
-
-            //    Label label7 = new Label();
-            //    label7.AutoSize = true;
-            //    label7.Location = new System.Drawing.Point(406, 85);
-            //    label7.Name = "label7";
-            //    label7.Size = new System.Drawing.Size(41, 12);
-            //    label7.TabIndex = 7;
-            //    label7.Text = GetFinishTime(int.Parse(label2.Text), int.Parse(label3.Text), dbUtil);
-
-            //    Label label8 = new Label();
-            //    label8.AutoSize = true;
-            //    label8.Location = new System.Drawing.Point(311, 85);
-            //    label8.Name = "label8";
-            //    label8.Size = new System.Drawing.Size(89, 12);
-            //    label8.TabIndex = 6;
-            //    label8.Text = "预计结束时间：";
-
-            //    tabpage.Controls.Add(label1);
-            //    tabpage.Controls.Add(label2);
-            //    tabpage.Controls.Add(label3);
-            //    tabpage.Controls.Add(label4);
-            //    tabpage.Controls.Add(label5);
-            //    tabpage.Controls.Add(label6);
-            //    tabpage.Controls.Add(label7);
-            //    tabpage.Controls.Add(label8);
-            //    tabControl1.Controls.Add(tabpage);
-            //}
+            int num = 0;
+            foreach (DictionaryEntry dictionaryEntry in hash)
+            {
+                MysqlOperate operate = this.Operate(dictionaryEntry.Value.ToString());
+                if (operate.OpenConnection() == true)
+                {
+                    MyGroupBox myGroupBox = new MyGroupBox();
+                    myGroupBox.gbxDwgDetail.Text = dictionaryEntry.Key.ToString();
+                    myGroupBox.Location = new Point(5, 3 + num * 94);
+                    myGroupBox.lblDwgCount.Text = operate.DrwingsCount("").ToString();
+                    myGroupBox.lblErrorDwgCount.Text = operate.DrwingsCount("2").ToString();
+                    myGroupBox.lblProcessDwgCount.Text = operate.DrwingsCount("1").ToString();
+                    myGroupBox.lblProcessEndTime.Text = this.GetFinishTime(int.Parse(myGroupBox.lblDwgCount.Text), int.Parse(myGroupBox.lblProcessDwgCount.Text), int.Parse(myGroupBox.lblErrorDwgCount.Text), operate);
+                    myGroupBox.lblProcessTime.Text = this.GetRemainTime(operate);
+                    this.MainPanel.Controls.Add((Control)myGroupBox);
+                    ++num;
+                }
+                else
+                {
+                    continue;
+                }
+            }
         }
 
         public MysqlOperate Operate(string connectionStr)
@@ -153,25 +92,61 @@ namespace Monitor
 
         public string GetRemainTime(MysqlOperate operate)
         {
-            DateTime dt = operate.GetInitDateTime();
-            DateTime dtNow = DateTime.Now;
-            TimeSpan ts = dtNow - dt;
-            return ts.Hours.ToString() + "小时" + ts.Minutes.ToString() + "分钟" + ts.Seconds.ToString() + "秒";
-        }
-
-        public string GetFinishTime(int Count, int processCount, MysqlOperate operate)
-        {
-            DateTime dt = operate.GetInitDateTime();
-            DateTime dtNow = DateTime.Now;
-            TimeSpan ts = dtNow - dt;
-            if (processCount != 0)
+            var dateTime = operate.GetInitDateTime();
+            if (!string.IsNullOrEmpty(dateTime))
             {
-                var temp = ts.TotalSeconds / processCount;
-                var finish = Convert.ToInt32((Count - processCount) * temp);
-                TimeSpan tsFinish = new TimeSpan(0, 0, finish);
-                return tsFinish.Hours.ToString() + "小时" + tsFinish.Minutes.ToString() + "分钟" + tsFinish.Seconds.ToString() + "秒";
+                DateTime dt = new DateTime();
+                dt = Convert.ToDateTime(dateTime);
+                DateTime dtNow = DateTime.Now;
+                TimeSpan ts = dtNow - dt;
+                return ts.Hours.ToString() + "小时" + ts.Minutes.ToString() + "分钟" + ts.Seconds.ToString() + "秒";
             }
             return "0小时0分钟0秒";
+        }
+
+        public string GetFinishTime(int Count, int processCount, int errorCount, MysqlOperate operate)
+        {
+            var dateTime = operate.GetInitDateTime();
+            if (!string.IsNullOrEmpty(dateTime))
+            {
+                DateTime dt = new DateTime();
+                DateTime dtNow = DateTime.Now;
+                TimeSpan ts = dtNow - Convert.ToDateTime(dt);
+                var remainCount = Count - (processCount + errorCount);
+                if (remainCount != 0)
+                {
+                    if (processCount != 0)
+                    {
+                        var temp = ts.TotalSeconds / processCount;
+                        var finish = Convert.ToInt32((Count - processCount) * temp);
+                        TimeSpan tsFinish = new TimeSpan(0, 0, finish);
+                        return tsFinish.Hours.ToString() + "小时" + tsFinish.Minutes.ToString() + "分钟" + tsFinish.Seconds.ToString() + "秒";
+                    }
+                    else
+                    {
+                        return "0小时0分钟0秒";
+                    }
+                }
+            }
+            return "0小时0分钟0秒";
+        }
+
+        private void ConfigSettings()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Application.ExecutablePath + ".config");
+            XmlNode node = doc.SelectSingleNode("/configuration/connectionStrings");
+            XmlElement ele = (XmlElement)node;
+            XmlNodeList elemList = ele.GetElementsByTagName("add");
+            if (elemList.Count <= 0)
+            {
+                var msg = "系统检测到还没有配置检测服务器，是否配置?";
+                if (MessageBox.Show(msg, "系统提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    ConfigForm form = new ConfigForm(this);
+                    form.ShowDialog();
+                }
+            }
         }
     }
 }

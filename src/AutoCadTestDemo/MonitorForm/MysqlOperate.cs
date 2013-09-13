@@ -103,16 +103,25 @@ namespace Monitor
             dbUtil = new MysqlDBUtil(connection);
         }
 
-        public DateTime GetInitDateTime()
+        public string GetInitDateTime()
         {
             var strSql = "select inittime from config";
             DataSet ds = dbUtil.Query(strSql);
-            DateTime dateTime = new DateTime();
+            //DateTime dateTime = new DateTime();
+            var dateTime = "";
             if (ds.Tables.Count > 0)
             {
-                dateTime = Convert.ToDateTime(ds.Tables[0].Rows[0][0]);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return dateTime = ds.Tables[0].Rows[0][0].ToString();
+                }
             }
-            return dateTime;
+            return "";
+        }
+
+        public bool OpenConnection()
+        {
+            return dbUtil.OpenConnection();
         }
     }
 }

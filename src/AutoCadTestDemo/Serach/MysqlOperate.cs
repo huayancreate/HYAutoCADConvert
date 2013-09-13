@@ -107,7 +107,7 @@ namespace Search
 
         public DataTable GetCodeDto(string oldCode)
         {
-            var strSql = "SELECT * FROM code WHERE oldCode like'%" + oldCode + "%'";
+            var strSql = "select * from code where (OldCode like '%" + oldCode + "%' or NewCode like '%" + oldCode + "%')";
             DataSet ds = MysqlDBUtil.Query(strSql);
             if (ds.Tables.Count > 0)
             {
